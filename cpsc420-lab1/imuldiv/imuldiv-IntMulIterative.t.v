@@ -114,6 +114,18 @@ module tester;
     t0.src.m[8] = 67'h0_0deadbee_10000000; t0.sink.m[8] = 64'h00deadbe_e0000000;
     t0.src.m[9] = 67'h0_deadbeef_10000000; t0.sink.m[9] = 64'hfdeadbee_f0000000;
 
+    // TODO: add more test cases here 
+
+    // 0 * non-zero
+    t0.src.m[10] = 67'h0_00000000_00000ff0; t0.sink.m[10] = 64'h00000000_00000000;
+
+    // non-zero * 0
+    t0.src.m[11] = 67'h0_00000ff0_00000000; t0.sink.m[11] = 64'h00000000_00000000;
+
+    // 
+    // need tests for overflow?
+
+
     #5;   t0_reset = 1'b1;
     #20;  t0_reset = 1'b0;
     #10000; `VC_TEST_CHECK( "Is sink finished?", t0_done )

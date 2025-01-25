@@ -1,5 +1,5 @@
 $date
-	Tue Jan 14 16:40:52 2025
+	Sat Jan 25 14:55:17 2025
 $end
 $version
 	Icarus Verilog
@@ -7,341 +7,169 @@ $end
 $timescale
 	1s
 $end
-$scope module imuldiv_DivReqMsgFromBits $end
-$var wire 65 ! bits [64:0] $end
-$var wire 1 " func $end
+$scope module imuldiv_MulDivReqMsgFromBits $end
+$var wire 67 ! bits [66:0] $end
+$var wire 3 " func [2:0] $end
 $var wire 32 # b [31:0] $end
 $var wire 32 $ a [31:0] $end
 $upscope $end
-$scope module imuldiv_DivReqMsgToBits $end
+$scope module imuldiv_MulDivReqMsgToBits $end
 $var wire 32 % a [31:0] $end
 $var wire 32 & b [31:0] $end
-$var wire 1 ' func $end
-$var wire 65 ( bits [64:0] $end
-$upscope $end
-$scope module imuldiv_DivReqMsgToStr $end
-$var wire 65 ) msg [64:0] $end
-$var wire 1 * func $end
-$var wire 32 + b [31:0] $end
-$var wire 32 , a [31:0] $end
-$var parameter 1 - fn_signed $end
-$var parameter 1 . fn_unsigned $end
-$var reg 160 / full_str [159:0] $end
-$var reg 16 0 tiny_str [15:0] $end
-$upscope $end
-$scope module imuldiv_MulDivReqMsgFromBits $end
-$var wire 67 1 bits [66:0] $end
-$var wire 3 2 func [2:0] $end
-$var wire 32 3 b [31:0] $end
-$var wire 32 4 a [31:0] $end
-$upscope $end
-$scope module imuldiv_MulDivReqMsgToBits $end
-$var wire 32 5 a [31:0] $end
-$var wire 32 6 b [31:0] $end
-$var wire 3 7 func [2:0] $end
-$var wire 67 8 bits [66:0] $end
+$var wire 3 ' func [2:0] $end
+$var wire 67 ( bits [66:0] $end
 $upscope $end
 $scope module imuldiv_MulDivReqMsgToStr $end
-$var wire 67 9 msg [66:0] $end
-$var wire 3 : func [2:0] $end
-$var wire 32 ; b [31:0] $end
-$var wire 32 < a [31:0] $end
-$var parameter 3 = div $end
-$var parameter 3 > divu $end
-$var parameter 3 ? mul $end
-$var parameter 3 @ rem $end
-$var parameter 3 A remu $end
-$var reg 160 B full_str [159:0] $end
-$var reg 16 C tiny_str [15:0] $end
+$var wire 67 ) msg [66:0] $end
+$var wire 3 * func [2:0] $end
+$var wire 32 + b [31:0] $end
+$var wire 32 , a [31:0] $end
+$var parameter 3 - div $end
+$var parameter 3 . divu $end
+$var parameter 3 / mul $end
+$var parameter 3 0 rem $end
+$var parameter 3 1 remu $end
+$var reg 160 2 full_str [159:0] $end
+$var reg 16 3 tiny_str [15:0] $end
 $upscope $end
 $scope module sim $end
-$var wire 1 D muldivreq_go $end
-$var wire 1 E muldivresp_go $end
-$var wire 1 F sink_rdy $end
-$var wire 1 G src_rdy $end
-$var wire 1 H sink_val $end
-$var wire 64 I sink_msg [63:0] $end
-$var reg 1 J busy $end
-$var reg 1 K clk $end
-$var reg 32 L cycle_count [31:0] $end
-$var reg 1024 M op_type [1023:0] $end
-$var reg 1 N reset $end
-$var reg 32 O src_msg_a [31:0] $end
-$var reg 32 P src_msg_b [31:0] $end
-$var reg 3 Q src_msg_fn [2:0] $end
-$var reg 1 R src_val $end
+$var wire 1 4 muldivreq_go $end
+$var wire 1 5 muldivresp_go $end
+$var wire 1 6 sink_rdy $end
+$var wire 1 7 src_rdy $end
+$var wire 1 8 sink_val $end
+$var wire 32 9 sink_msg [31:0] $end
+$var reg 1 : busy $end
+$var reg 1 ; clk $end
+$var reg 32 < cycle_count [31:0] $end
+$var reg 1024 = op_type [1023:0] $end
+$var reg 1 > reset $end
+$var reg 32 ? src_msg_a [31:0] $end
+$var reg 32 @ src_msg_b [31:0] $end
+$var reg 3 A src_msg_fn [2:0] $end
+$var reg 1 B src_val $end
 $scope module imuldiv $end
-$var wire 1 K clk $end
-$var wire 1 S divreq_msg_fn $end
-$var wire 1 T divreq_val $end
-$var wire 32 U muldivreq_msg_a [31:0] $end
-$var wire 32 V muldivreq_msg_b [31:0] $end
-$var wire 3 W muldivreq_msg_fn [2:0] $end
-$var wire 1 G muldivreq_rdy $end
-$var wire 1 R muldivreq_val $end
-$var wire 1 F muldivresp_rdy $end
-$var wire 1 H muldivresp_val $end
-$var wire 1 X mulreq_val $end
-$var wire 1 N reset $end
-$var wire 1 Y mulresp_val $end
-$var wire 64 Z mulresp_msg_result [63:0] $end
-$var wire 1 [ mulreq_rdy $end
-$var wire 64 \ muldivresp_msg_result [63:0] $end
-$var wire 1 ] divresp_val $end
-$var wire 64 ^ divresp_msg_result [63:0] $end
-$var wire 1 _ divreq_rdy $end
-$scope module idiv $end
-$var wire 1 K clk $end
-$var wire 32 ` divreq_msg_a [31:0] $end
-$var wire 32 a divreq_msg_b [31:0] $end
-$var wire 1 S divreq_msg_fn $end
-$var wire 1 T divreq_val $end
-$var wire 1 F divresp_rdy $end
-$var wire 1 N reset $end
-$var wire 1 ] divresp_val $end
-$var wire 64 b divresp_msg_result [63:0] $end
-$var wire 1 _ divreq_rdy $end
-$scope module ctrl $end
-$upscope $end
-$scope module dpath $end
-$var wire 1 K clk $end
-$var wire 32 c divreq_msg_a [31:0] $end
-$var wire 32 d divreq_msg_b [31:0] $end
-$var wire 1 S divreq_msg_fn $end
-$var wire 1 _ divreq_rdy $end
-$var wire 1 T divreq_val $end
-$var wire 1 F divresp_rdy $end
-$var wire 1 e is_result_signed_div $end
-$var wire 1 f is_result_signed_rem $end
-$var wire 1 N reset $end
-$var wire 32 g unsigned_remainder [31:0] $end
-$var wire 32 h unsigned_quotient [31:0] $end
-$var wire 32 i unsigned_b [31:0] $end
-$var wire 32 j unsigned_a [31:0] $end
-$var wire 32 k signed_remainder [31:0] $end
-$var wire 32 l signed_quotient [31:0] $end
-$var wire 1 m sign_bit_b $end
-$var wire 1 n sign_bit_a $end
-$var wire 1 ] divresp_val $end
-$var wire 64 o divresp_msg_result [63:0] $end
-$var reg 32 p a_reg [31:0] $end
-$var reg 32 q b_reg [31:0] $end
-$var reg 1 r fn_reg $end
-$var reg 1 ] val_reg $end
-$upscope $end
-$upscope $end
-$scope module imul $end
-$var wire 1 K clk $end
-$var wire 32 s mulreq_msg_a [31:0] $end
-$var wire 32 t mulreq_msg_b [31:0] $end
-$var wire 1 X mulreq_val $end
-$var wire 1 F mulresp_rdy $end
-$var wire 1 N reset $end
-$var wire 1 Y mulresp_val $end
-$var wire 64 u mulresp_msg_result [63:0] $end
-$var wire 1 [ mulreq_rdy $end
-$scope module ctrl $end
-$upscope $end
-$scope module dpath $end
-$var wire 1 K clk $end
-$var wire 1 v is_result_signed $end
-$var wire 32 w mulreq_msg_a [31:0] $end
-$var wire 32 x mulreq_msg_b [31:0] $end
-$var wire 1 [ mulreq_rdy $end
-$var wire 1 X mulreq_val $end
-$var wire 1 F mulresp_rdy $end
-$var wire 1 N reset $end
-$var wire 64 y unsigned_result [63:0] $end
-$var wire 32 z unsigned_b [31:0] $end
-$var wire 32 { unsigned_a [31:0] $end
-$var wire 1 | sign_bit_b $end
-$var wire 1 } sign_bit_a $end
-$var wire 1 Y mulresp_val $end
-$var wire 64 ~ mulresp_msg_result [63:0] $end
-$var reg 64 !" a_reg [63:0] $end
-$var reg 32 "" b_reg [31:0] $end
-$var reg 1 Y val_reg $end
-$upscope $end
-$upscope $end
+$var wire 1 ; clk $end
+$var wire 1 C is_result_signed_divmul $end
+$var wire 1 D is_result_signed_rem $end
+$var wire 32 E muldivreq_msg_a [31:0] $end
+$var wire 32 F muldivreq_msg_b [31:0] $end
+$var wire 3 G muldivreq_msg_fn [2:0] $end
+$var wire 1 7 muldivreq_rdy $end
+$var wire 1 B muldivreq_val $end
+$var wire 1 6 muldivresp_rdy $end
+$var wire 1 > reset $end
+$var wire 32 H unsigned_result [31:0] $end
+$var wire 32 I unsigned_b [31:0] $end
+$var wire 32 J unsigned_a [31:0] $end
+$var wire 1 K sign_bit_b $end
+$var wire 1 L sign_bit_a $end
+$var wire 1 8 muldivresp_val $end
+$var wire 32 M muldivresp_msg_result [31:0] $end
+$var wire 1 N is_result_signed $end
+$var reg 64 O a_reg [63:0] $end
+$var reg 32 P b_reg [31:0] $end
+$var reg 3 Q fn_reg [2:0] $end
+$var reg 1 8 val_reg $end
 $upscope $end
 $upscope $end
 $enddefinitions $end
 $comment Show the parameter values. $end
 $dumpall
-b100 A
-b11 @
-b0 ?
-b10 >
-b1 =
-0.
-1-
+b100 1
+b11 0
+b0 /
+b10 .
+b1 -
 $end
 #0
 $dumpvars
-bx ""
-bx !"
-bx ~
-x}
-x|
-bx {
-bx z
-bx y
-bx x
-bx w
-xv
-bx u
-bx t
-bx s
-xr
-bx q
-bx p
-bx o
-xn
-xm
-bx l
-bx k
-bx j
-bx i
-bx h
-bx g
-xf
-xe
-bx d
-bx c
-bx b
-bx a
-bx `
-1_
-bx ^
-x]
-bx \
-1[
-bx Z
-xY
-0X
-bx W
-bx V
-bx U
-0T
-xS
-0R
 bx Q
 bx P
 bx O
-1N
+xN
 bx M
-b0 L
-0K
-0J
+xL
+xK
+bx J
 bx I
-xH
-1G
-1F
-xE
-0D
-b11111100111111 C
-b111010101101110011001000110010101100110011010010110111001100101011001000010000001100110011101010110111001100011 B
-bz <
-bz ;
-bz :
-bz 9
-bz 8
-bz 7
-bz 6
-bz 5
-bz 4
-bz 3
-bz 2
-bz 1
-b11111100111111 0
-b111010101101110011001000110010101100110011010010110111001100101011001000010000001100110011101010110111001100011 /
+bx H
+bx G
+bx F
+bx E
+xD
+xC
+0B
+bx A
+bx @
+bx ?
+1>
+bx =
+b0 <
+0;
+0:
+bx 9
+x8
+17
+16
+x5
+04
+b11111100111111 3
+b111010101101110011001000110010101100110011010010110111001100101011001000010000001100110011101010110111001100011 2
 bz ,
 bz +
-z*
+bz *
 bz )
 bz (
-z'
+bz '
 bz &
 bz %
 bz $
 bz #
-z"
+bz "
 bz !
 $end
 #5
-0E
-0H
-0Y
-b0xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx !"
-0]
-1K
+05
+08
+b0xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx O
+1;
 #10
-1X
-1D
-0S
-0K
-1R
-b1001 P
-b1001 V
-b1001 a
-b1001 d
-b1001 t
-b1001 x
-b11111110 O
-b11111110 U
-b11111110 `
-b11111110 c
-b11111110 s
-b11111110 w
-b0 Q
-b0 W
-b11011010111010101101100 M
-0N
+14
+0;
+1B
+b11111111111111111111111111111111 @
+b11111111111111111111111111111111 F
+b11111110 ?
+b11111110 E
+b0 A
+b0 G
+b11011010111010101101100 =
+0>
 #15
-b100011101110 I
-b100011101110 \
-b100011101110 Z
-b100011101110 u
-b100011101110 ~
-b10 k
-b1000000000000000000000000000011100 ^
-b1000000000000000000000000000011100 b
-b1000000000000000000000000000011100 o
-b11100 l
-b100011101110 y
-0X
-0e
-b10 g
-b11100 h
-1E
-0v
-b11111110 {
+b11111111111111111111111100000010 9
+b11111111111111111111111100000010 M
+b11111110 H
+1N
+1C
+b11111110 J
+04
+15
+1K
+b1 I
 0D
-0m
-b1001 i
-0f
-0n
-b11111110 j
-1H
-0|
-b1001 z
-0}
-b1 L
-0R
-1J
-b1001 q
-b11111110 p
-0r
-1Y
-b1001 ""
-b11111110 !"
-1K
+0L
+b1 <
+0B
+1:
+18
+b11111111111111111111111111111111 P
+b11111110 O
+b0 Q
+1;
 #20
-0K
+0;
 #25
-0E
-bx I
-bx \
-0H
-0Y
-1K
+05
+08
+1;
