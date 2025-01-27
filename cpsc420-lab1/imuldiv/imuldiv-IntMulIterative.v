@@ -103,9 +103,9 @@ module imuldiv_IntMulIterativeDpath (
   // copied from commented code below
   wire        sign_bit_a = mulreq_msg_a[31];
   wire        sign_bit_b = mulreq_msg_b[31];
-  // wire        sign_bit_result = sign_bit_a ^ sign_bit_b; // need to convert to reg
-  reg         sign_a_reg;
-  reg         sign_b_reg;
+  // wire        sign_bit_result = sign_bit_a ^ sign_bit_b;
+  // reg         sign_a_reg;
+  // reg         sign_b_reg;
   reg         sign_result_reg;
 
   wire [31:0] unsigned_a = (sign_bit_a) ? (~mulreq_msg_a + 1'b1) : mulreq_msg_a;
@@ -122,8 +122,8 @@ module imuldiv_IntMulIterativeDpath (
       counter_reg <= 5'd31;
       a_reg <= 64'b0;
       b_reg <= 32'b0;
-      sign_a_reg <= 1'b0;
-      sign_b_reg <= 1'b0;
+      // sign_a_reg <= 1'b0;
+      // sign_b_reg <= 1'b0;
       sign_result_reg <= 1'b0;
     end else begin
       if (perform_load) begin
@@ -132,8 +132,8 @@ module imuldiv_IntMulIterativeDpath (
         a_reg <= {32'b0, unsigned_a};
         b_reg <= unsigned_b;
 
-        sign_a_reg <= sign_bit_a;
-        sign_b_reg <= sign_bit_b;
+        // sign_a_reg <= sign_bit_a;
+        // sign_b_reg <= sign_bit_b;
         sign_result_reg <= sign_bit_a ^ sign_bit_b;
       end
       if (perform_shift_op) begin
@@ -149,7 +149,7 @@ module imuldiv_IntMulIterativeDpath (
     end
   end
 
-  assign counter_is_zero = (counter_reg == 5'b0);
+  assign counter_is_zero = (counter_reg == 5'd0);
   assign lsb = b_reg[0];
 
   wire [63:0] signed_result = (sign_result_reg) ? (~result_reg + 1'b1) : result_reg;
@@ -226,8 +226,9 @@ module imuldiv_IntMulIterativeCtrl (
 
   // need temp state?
   reg [1:0] state, next_state;
-  reg perform_load_op_reg;
   assign perform_add_op = lsb;
+  reg perform_load_op_reg;
+
 
   always @(posedge clk) begin
     if (reset) begin

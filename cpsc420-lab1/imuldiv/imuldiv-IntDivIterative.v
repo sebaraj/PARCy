@@ -24,12 +24,12 @@ module imuldiv_IntDivIterative (
 );
 
   // control <---> datapath interface
-  wire perform_shift_op;
+  wire perform_shift_op_div;
   // wire perform_buffer_op;
-  wire counter_decr;
-  wire counter_is_zero;
+  wire counter_decr_div;
+  wire counter_is_zero_div;
   // wire diff_a_b_less_than_zero;
-  wire perform_load;
+  wire perform_load_div;
 
   imuldiv_IntDivIterativeDpath dpath (
       .clk               (clk),
@@ -43,12 +43,12 @@ module imuldiv_IntDivIterative (
       .divresp_val       (divresp_val),
       .divresp_rdy       (divresp_rdy),
 
-      .perform_shift_op(perform_shift_op),
+      .perform_shift_op_div(perform_shift_op_div),
       // .perform_buffer_op      (perform_buffer_op),
-      .counter_decr    (counter_decr),
-      .counter_is_zero (counter_is_zero),
+      .counter_decr_div    (counter_decr_div),
+      .counter_is_zero_div (counter_is_zero_div),
       // .diff_a_b_less_than_zero(diff_a_b_less_than_zero),
-      .perform_load    (perform_load)
+      .perform_load_div    (perform_load_div)
   );
 
   imuldiv_IntDivIterativeCtrl ctrl (
@@ -59,12 +59,12 @@ module imuldiv_IntDivIterative (
       .divresp_val(divresp_val),
       .divresp_rdy(divresp_rdy),
 
-      .perform_shift_op(perform_shift_op),
+      .perform_shift_op_div(perform_shift_op_div),
       // .perform_buffer_op      (perform_buffer_op),
-      .counter_decr    (counter_decr),
-      .counter_is_zero (counter_is_zero),
+      .counter_decr_div    (counter_decr_div),
+      .counter_is_zero_div (counter_is_zero_div),
       // .diff_a_b_less_than_zero(diff_a_b_less_than_zero),
-      .perform_load    (perform_load)
+      .perform_load_div    (perform_load_div)
   );
 
 endmodule
@@ -87,11 +87,11 @@ module imuldiv_IntDivIterativeDpath (
     output        divresp_val,         // Response val Signal
     input         divresp_rdy,         // Response rdy Signal
 
-    input  perform_shift_op,
+    input  perform_shift_op_div,
     // input  perform_buffer_op,
-    input  counter_decr,
-    input  perform_load,
-    output counter_is_zero
+    input  counter_decr_div,
+    input  perform_load_div,
+    output counter_is_zero_div
     // output diff_a_b_less_than_zero
 );
 
@@ -101,39 +101,76 @@ module imuldiv_IntDivIterativeDpath (
 
   wire sign_bit_a = divreq_msg_a[31];
   wire sign_bit_b = divreq_msg_b[31];
-  reg sign_result_reg;
+  wire sign_op = (divreq_msg_fn == `IMULDIV_DIVREQ_MSG_FUNC_SIGNED);
+  wire [31:0] unsigned_a = (sign_bit_a) ? (~divreq_msg_a + 1'b1) : divreq_msg_a;
+  wire [31:0] unsigned_b = (sign_bit_b) ? (~divreq_msg_b + 1'b1) : divreq_msg_b;
+  reg sign_a_reg;
+  reg sign_b_reg;
 
+  wire [64:0] a_shifted = a_reg << 1;
+  wire [64:0] diff_a_b = a_shifted - b_reg;
+
+
+  // do i need these:
+  // val_reg, remainder_quotiet, divisor_ref, shifted wire, sub_out wire
+  // wire [64:0] a_shifted = a_reg << 1;
+  // wire [64:0] diff_a_b = a_reg - b_reg;
+
+  reg sign_result_reg;
   reg [4:0] counter_reg;
 
-  reg fn_reg = divreq_msg_fn;
+  // reg fn_reg = divreq_msg_fn;
 
   always @(posedge clk) begin
     if (reset) begin
       counter_reg <= 5'd31;
       a_reg <= 65'b0;
       b_reg <= 65'b0;
+      diff <= 65'b0;
       sign_result_reg <= 1'b0;
+      sign_a_reg <= 1'b0;
+      sign_b_reg <= 1'b0;
 
     end else begin
-      if (perform_load) begin
+      if (perform_load_div) begin
         counter_reg <= 5'd31;
         a_reg <= {33'b0, divreq_msg_a};
         b_reg <= {1'b0, divreq_msg_b, 32'b0};
+        sign_a_reg <= sign_bit_a;
+        sign_b_reg <= sign_bit_b;
+        sign_result_reg <= sign_op;
 
-        // TODO: finish
+        // finish
       end
-      if (perform_shift_op) begin
-        a_reg <= a_reg << 1;
-        diff = A - B;
-        if (A < B) begin
-          a_reg <= {diff[64:1], 1'b1};
+      if (perform_shift_op_div) begin
+        // a_reg <= a_reg << 1;
+        if (diff_a_b[64] == 1) begin
+          a_reg <= a_shifted;
+        end else begin
+          a_reg <= {diff_a_b[64:1], 1'b1};
         end
+        // diff  <= A - B;
+        // if (diff > 0) begin
+        // a_reg <= {diff[64:1], 1'b1};
+        // end
       end
-      if (counter_decr) begin
+      if (counter_decr_div) begin
         counter_reg <= counter_reg - 1;
       end
     end
   end
+
+  assign counter_is_zero_div = (counter_reg == 0);
+
+  wire [31:0] unsigned_quotient = a_reg[31:0];
+  wire [31:0] unsigned_remainder = a_reg[63:32];
+
+  wire sign_quotient_op = (sign_a_reg ^ sign_b_reg) & sign_result_reg;
+  wire sign_remainder_op = sign_a_reg & sign_result_reg;
+
+  wire [31:0] output_quotient = (sign_quotient_op) ? (~unsigned_quotient + 1'b1) : unsigned_quotient;
+  wire [31:0] output_remainder = (sign_remainder_op) ? (~unsigned_remainder + 1'b1) : unsigned_remainder;
+  assign divresp_msg_result = {output_remainder, output_quotient};
 
   //----------------------------------------------------------------------
   // Sequential Logic
@@ -219,8 +256,63 @@ endmodule
 //------------------------------------------------------------------------
 
 module imuldiv_IntDivIterativeCtrl (
-    test
+    input clk,
+    input reset,
+
+    input divreq_val,  // Request val Signal
+    output reg divreq_rdy,  // Request rdy Signal
+
+    output reg divresp_val,  // Response val Signal
+    input divresp_rdy,  // Response rdy Signal
+
+    output reg perform_shift_op_div,
+    output reg counter_decr_div,
+    output reg perform_load_div,
+    input counter_is_zero_div
 );
+
+  reg [1:0] state_div, next_state_div;
+  reg perform_load_op_reg_div;
+  // reg perform_shift_op_div;
+
+  always @(posedge clk) begin
+    if (reset) begin
+      state_div <= 2'b00;
+    end else begin
+      state_div <= next_state_div;
+    end
+  end
+
+  always @* begin
+    next_state_div = state_div;
+    perform_load_op_reg_div = 0;
+    perform_shift_op_div = 0;
+    counter_decr_div = 0;
+    divreq_rdy = 0;
+    divresp_val = 0;
+    case (state_div)
+      2'b00: begin
+        divreq_rdy = 1;
+        if (divreq_val) begin
+          next_state_div = 2'b01;
+        end
+      end
+      2'b01: begin
+        perform_shift_op_div = 1;
+        counter_decr_div = 1;
+        if (counter_is_zero_div) begin
+          next_state_div = 2'b10;
+        end
+      end
+      2'b10: begin
+        divresp_val = 1;
+        if (divreq_rdy) begin
+          next_state_div = 2'b00;
+        end
+      end
+    endcase
+
+  end
 
 endmodule
 
