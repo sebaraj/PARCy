@@ -98,7 +98,6 @@ module imuldiv_IntDivIterativeDpath (
   reg         fn_reg;  // Register for storing function
   reg  [31:0] a_reg;  // Register for storing operand A
   reg  [31:0] b_reg;  // Register for storing operand B
-  reg         val_reg;  // Register for storing valid bit
   reg  [ 4:0] counter_reg;  // Register for storing counter, 2^5 = 32 so 5 bits needed 
 
   reg         is_op_signed_reg;
@@ -107,24 +106,23 @@ module imuldiv_IntDivIterativeDpath (
   wire [64:0] shifted = remainder_quotient << 1;
   wire [64:0] sub_out = shifted - divisor_reg;
 
+  reg         sign_bit_a;
+  reg         sign_bit_b;
 
 
 
 
 
 
-  // Extract sign bits
-
-  wire        sign_bit_a = a_reg[31];
-  wire        sign_bit_b = b_reg[31];
 
   wire        is_op_signed = (divreq_msg_fn == `IMULDIV_DIVREQ_MSG_FUNC_SIGNED);  //  check
 
 
-  // unsign if fn_reg says so
+  // unsign if fn_reg says so THIS IS THE ISSUE IT USES THE NEXT MESSAGE
 
-  wire [31:0] abs_a = (sign_bit_a && is_op_signed) ? (~divreq_msg_a + 1'b1) : divreq_msg_a;
-  wire [31:0] abs_b = (sign_bit_b && is_op_signed) ? (~divreq_msg_b + 1'b1) : divreq_msg_b;
+
+  wire [31:0] unsigned_a = (divreq_msg_a[31] && is_op_signed) ? (~divreq_msg_a + 1) : divreq_msg_a;
+  wire [31:0] unsigned_b = (divreq_msg_b[31] && is_op_signed) ? (~divreq_msg_b + 1) : divreq_msg_b;
 
   /*   always @( posedge clk ) begin
 
@@ -143,25 +141,28 @@ module imuldiv_IntDivIterativeDpath (
       a_reg              <= 32'b0;
       b_reg              <= 32'b0;
       fn_reg             <= 1'b0;
-      val_reg            <= 1'b0;
       is_op_signed_reg   <= 1'b0;
       remainder_quotient <= 65'b0;
       divisor_reg        <= 65'b0;
       counter_reg        <= 5'd31;
+      sign_bit_a         <= 1'b0;
+      sign_bit_b         <= 1'b0;
       // more
     end else begin
       // if fsm says load load
       if (load_operands) begin
         fn_reg             <= divreq_msg_fn;  // 1 will be signed, 0 will be unsigned
-        val_reg            <= divreq_val;
+        //val_reg <= divreq_val;
         // determine if the operation is signed or not
         is_op_signed_reg   <= is_op_signed;
-        a_reg              <= divreq_msg_a;
-        b_reg              <= divreq_msg_b;  // need these?
+        a_reg              <= unsigned_a;
+        b_reg              <= unsigned_b;  // need these?
+        sign_bit_a         <= divreq_msg_a[31];
+        sign_bit_b         <= divreq_msg_b[31];
         counter_reg        <= 5'd31;
         //  we initialize the right-half of quotient with operand A and the left-half of divisor with operand B
-        remainder_quotient <= {33'b0, abs_a};
-        divisor_reg        <= {abs_b, 31'b0};
+        remainder_quotient <= {33'b0, unsigned_a};  // same as reg_a in dataflow can changename
+        divisor_reg        <= {1'b0, unsigned_b, 32'b0};  // need 31 for alignment right
 
       end else if (do_shift) begin
         // shift the remainder left by 1
@@ -191,13 +192,13 @@ module imuldiv_IntDivIterativeDpath (
   assign counter_zero = (counter_reg == 5'd0);
 
   // figure out signs
-  wire [31:0] raw_quotient = remainder_quotient[32:1];
+  wire [31:0] raw_quotient = remainder_quotient[31:0];  // this is dif that flowpath given but works
   wire [31:0] raw_remainder = remainder_quotient[63:32];
 
 
   // only sign the quotient if the operation is signed
-  wire should_sign_quotient = (a_reg[31] ^ b_reg[31]) & is_op_signed_reg;
-  wire should_sign_remainder = a_reg[31] & is_op_signed_reg;
+  wire should_sign_quotient = (sign_bit_a ^ sign_bit_b) & is_op_signed_reg;
+  wire should_sign_remainder = sign_bit_a & is_op_signed_reg;
 
   wire [31:0] final_quotient = should_sign_quotient ? ~raw_quotient + 1'b1 : raw_quotient;
   wire [31:0] final_remainder = should_sign_remainder ? ~raw_remainder + 1'b1 : raw_remainder;
@@ -263,8 +264,7 @@ module imuldiv_IntDivIterativeDpath (
   // ready, and the response is valid when there is valid data in the
   // input registers.
  */
-  assign divreq_rdy = divresp_rdy;
-  assign divresp_val = val_reg;
+  //assign divreq_rdy  = divresp_rdy;
 
 endmodule
 
@@ -324,7 +324,8 @@ module imuldiv_IntDivIterativeCtrl (
 
     case (CurrentState)
       STATE_IDLE: begin
-        divreq_rdy = 1'b1;  // ready for new request 
+        divreq_rdy  = 1'b1;  // ready for new request 
+        divresp_val = 1'b0;  // not ready for response
         if (divreq_val && divreq_rdy) begin
           // load the datapath reg and move to exec in same state per Muhammad suggestion
           load_operands = 1'b1;
@@ -359,3 +360,4 @@ module imuldiv_IntDivIterativeCtrl (
 endmodule
 
 `endif
+

@@ -2,18 +2,6 @@ VCD info: dumpfile imuldiv-IntDivIterative.vcd opened for output.
 
  Entering Test Suite: imuldiv-IntDivIterative
   + Running Test Case: div/rem
-     [ FAILED ] Test ( vc-TestSink ) failed, [ 0000000000000000 != 00000000ffffffff ]
-     [ FAILED ] Test ( vc-TestSink ) failed, [ 0000000000000001 != 00000000ffffffff ]
-     [ FAILED ] Test ( vc-TestSink ) failed, [ 0000000000000000 != 00000000ffffffff ]
-     [ FAILED ] Test ( vc-TestSink ) failed, [ 0000000000000001 != 00000000ffffffff ]
-     [ FAILED ] Test ( vc-TestSink ) failed, [ 000000000000000d != 00000000ffffffff ]
-     [ FAILED ] Test ( vc-TestSink ) failed, [ 00000000ffffdf76 != 00000000ffffffff ]
-     [ FAILED ] Test ( vc-TestSink ) failed, [ 0000003200000000 != 00000000ffffffff ]
-     [ FAILED ] Test ( vc-TestSink ) failed, [ 0000002e0000000a != 00000000ffffffff ]
-     [ FAILED ] Test ( vc-TestSink ) failed, [ 00003372ffffdf75 != 00000000ffffffff ]
-     [ FAILED ] Test ( vc-TestSink ) failed, [ ffffda72ffffd353 != 00000000ffffffff ]
-     [ FAILED ] Test ( vc-TestSink ) failed, [ ffffcc8effffdf75 != 00000000ffffffff ]
-     [ FAILED ] Test ( vc-TestSink ) failed, [ ffffcc8e0000208b != 00000000ffffffff ]
-     [ FAILED ] Test ( Is sink finished? ) failed
+     [ passed ] Test ( Is sink finished? ) succeeded 
 
 ../imuldiv/imuldiv-IntDivIterative.t.v:137: $finish called at 10155 (1s)
