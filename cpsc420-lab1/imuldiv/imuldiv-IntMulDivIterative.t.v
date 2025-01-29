@@ -159,6 +159,31 @@ module tester;
     t0.src.m[ 7] = 65'h1_f5fe4fbc_ffffb14a; t0.sink.m[ 7] = 64'hffffcc8e_0000208b;
 
     // Add entries for divu/remu here
+    t0.src.m[ 8] = 67'h4_0000000b_00000003; t0.sink.m[ 8] = 64'h00000002_00000003;
+    // Dividing by 1
+    t0.src.m[ 9] = 67'h4_0000000a_00000001; t0.sink.m[ 9] = 64'h00000000_0000000a;
+    // Dividing by a larger number than the dividend
+    t0.src.m[ 10] = 67'h4_00000005_00000009; t0.sink.m[ 10] = 64'h00000005_00000000;
+    // Dividing a number by itself
+    t0.src.m[ 11] = 67'h4_00000007_00000007; t0.sink.m[ 11] = 64'h00000000_00000001;
+    // Dividend is 0
+    t0.src.m[ 12] = 67'h4_00000000_00000004; t0.sink.m[ 12] = 64'h00000000_00000000;
+    // Divisor is 0 -- yields remainder = dividend, quotient = ffffffff
+    t0.src.m[ 13] = 67'h4_00000007_00000000; t0.sink.m[ 13] = 64'h00000007_ffffffff;
+    // Maximum possible dividend (32-bit example)
+    t0.src.m[ 14] = 67'h4_ffffffff_00000002; t0.sink.m[ 14] = 64'h00000001_7fffffff;
+    // Maximum divisor that is not zero
+    t0.src.m[ 15] = 67'h4_0000000a_ffffffff; t0.sink.m[ 15] = 64'h0000000a_00000000;
+    // Near-boundary values (2^n - 1 and 2^n)
+    t0.src.m[ 16] = 67'h4_7fffffff_00000002; t0.sink.m[ 16] = 64'h00000001_3fffffff;
+    // Dividend = 2^31, Divisor = 2
+    t0.src.m[ 17] = 67'h4_80000000_00000002; t0.sink.m[ 17] = 64'h00000000_40000000;
+    // Small dividends and divisors
+    t0.src.m[ 18] = 67'h4_00000002_00000002; t0.sink.m[ 18] = 64'h00000000_00000001;
+    t0.src.m[ 19] = 67'h4_00000001_00000002; t0.sink.m[ 19] = 64'h00000001_00000000;
+    // Dividend = 0 and Divisor = 1
+    t0.src.m[ 20] = 67'h4_00000000_00000001; t0.sink.m[20] = 64'h00000000_00000000;
+
 
     #5;   t0_reset = 1'b1;
     #20;  t0_reset = 1'b0;
@@ -167,10 +192,27 @@ module tester;
   end
   `VC_TEST_CASE_END
 
+  `VC_TEST_CASE_BEGIN( 4, "mul/edge" )
+  begin
+    // testing all 64 bits for multiplication, as suggested
+    t0.src.m[ 0] = 67'h0_ffffffff_ffffffff; t0.sink.m[ 0] = 64'h00000000_00000001;
+    // ??? does test harness only check for lower 32 bits?
+    t0.src.m[ 1] = 67'h0_ffffffff_ffffffff; t0.sink.m[ 1] = 64'hfffffffe_00000001;
+    t0.src.m[ 2] = 67'h0_80000000_80000000; t0.sink.m[ 2] = 64'h40000000_00000000;
+    t0.src.m[ 3] = 67'h0_80000000_00000002; t0.sink.m[ 3] = 64'h00000001_00000000;
+    t0.src.m[ 4] = 67'h0_00010000_00010000; t0.sink.m[ 4] = 64'h00000001_00000000;
+    t0.src.m[ 5] = 67'h0_7fffffff_00000002; t0.sink.m[ 5] = 64'h00000000_fffffffe;
+    t0.src.m[ 6] = 67'h0_ffffffff_00000001; t0.sink.m[ 6] = 64'h00000000_ffffffff;
+    t0.src.m[ 7] = 67'h0_12345678_00000002; t0.sink.m[ 7] = 64'h00000000_2468acf0;
+    t0.src.m[ 8] = 67'h0_10000000_10000000; t0.sink.m[ 8] = 64'h01000000_00000000;
+
+  end
+  `VC_TEST_CASE_END
+
    //---------------------------------------------------------------------
    // Add More Test Cases Here
    //---------------------------------------------------------------------
 
-  `VC_TEST_SUITE_END( 3 /* replace with number of test cases */ )
+  `VC_TEST_SUITE_END( 4 /* replace with number of test cases */ )
 
 endmodule

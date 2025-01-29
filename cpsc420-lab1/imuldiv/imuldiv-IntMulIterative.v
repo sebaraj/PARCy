@@ -20,6 +20,9 @@ module imuldiv_IntMulIterative (
 );
 
   // control <--> datapath interface
+  // would be easier to have control logic for lsb/b[0] in datapath module to
+  // avoid having to pass it through control module,
+  // but in order to separate control and datapath...
   wire perform_shift_op;
   wire perform_add_op;
   wire counter_decr;
@@ -96,9 +99,11 @@ module imuldiv_IntMulIterativeDpath (
   // Sequential Logic
   //----------------------------------------------------------------------
 
-  reg  [63:0] a_reg;  // Register for storing operand A
-  reg  [31:0] b_reg;  // Register for storing operand B
-  reg         val_reg;  // Register for storing valid bit
+  reg [63:0] a_reg;  // Register for storing operand A
+  reg [31:0] b_reg;  // Register for storing operand B
+  assign lsb = b_reg[0];
+
+  // reg         val_reg;  // Register for storing valid bit
 
   // copied from commented code below
   wire        sign_bit_a = mulreq_msg_a[31];
@@ -112,8 +117,12 @@ module imuldiv_IntMulIterativeDpath (
   wire [31:0] unsigned_b = (sign_bit_b) ? (~mulreq_msg_b + 1'b1) : mulreq_msg_b;
 
   // new
-  reg  [63:0] result_reg;
   reg  [ 4:0] counter_reg;  // 32 op cycles
+  assign counter_is_zero = (counter_reg == 5'd0);
+
+  reg  [63:0] result_reg;
+  wire [63:0] signed_result = (sign_result_reg) ? (~result_reg + 1'b1) : result_reg;
+  assign mulresp_msg_result = signed_result;
 
 
   always @(posedge clk) begin
@@ -122,8 +131,6 @@ module imuldiv_IntMulIterativeDpath (
       counter_reg <= 5'd31;
       a_reg <= 64'b0;
       b_reg <= 32'b0;
-      // sign_a_reg <= 1'b0;
-      // sign_b_reg <= 1'b0;
       sign_result_reg <= 1'b0;
     end else begin
       if (perform_load) begin
@@ -131,9 +138,6 @@ module imuldiv_IntMulIterativeDpath (
         counter_reg <= 5'd31;
         a_reg <= {32'b0, unsigned_a};
         b_reg <= unsigned_b;
-
-        // sign_a_reg <= sign_bit_a;
-        // sign_b_reg <= sign_bit_b;
         sign_result_reg <= sign_bit_a ^ sign_bit_b;
       end
       if (perform_shift_op) begin
@@ -149,11 +153,7 @@ module imuldiv_IntMulIterativeDpath (
     end
   end
 
-  assign counter_is_zero = (counter_reg == 5'd0);
-  assign lsb = b_reg[0];
 
-  wire [63:0] signed_result = (sign_result_reg) ? (~result_reg + 1'b1) : result_reg;
-  assign mulresp_msg_result = signed_result;
 
   // Stall the pipeline if the response interface is not ready
   // if (mulresp_rdy) begin
@@ -229,10 +229,9 @@ module imuldiv_IntMulIterativeCtrl (
   assign perform_add_op = lsb;
   reg perform_load_op_reg;
 
-
   always @(posedge clk) begin
     if (reset) begin
-      state <= 2'b00;
+      state <= 0;
     end else begin
       state <= next_state;
     end
@@ -246,22 +245,22 @@ module imuldiv_IntMulIterativeCtrl (
     mulreq_rdy = 0;
     mulresp_val = 0;
     case (state)
-      2'b00: begin
+      0: begin
         mulreq_rdy = 1;
         if (mulreq_val) begin
-          next_state   = 2'b01;
+          next_state   = 1;
           perform_load = 1;
         end
       end
-      2'b01: begin
+      1: begin
         perform_shift_op = 1;
         counter_decr = 1;
-        if (counter_is_zero) next_state = 2'b10;
+        if (counter_is_zero) next_state = 2;
       end
-      2'b10: begin
+      2: begin
         mulresp_val = 1;
         if (mulresp_rdy) begin
-          next_state = 2'b00;
+          next_state = 0;
         end
       end
     endcase
