@@ -38,19 +38,64 @@
 
 Simple arithmetic operations are taken for granted in modern computing from the
 perspective of the common software engineer. However, at the hardware level,
-these operations are non-trivial to implement. This lab 
+these operations are non-trivial to implement. This lab focused on the
+implementation of a iterative multiplication and division module; Verilog was
+employed as the HDL to construct the multiplication and divison submodules,
+which each took in two 32-bit inputs and yielded a 64-bit output to be parsed
+as the product, quotient, or remainder. The submodules were integrated into a
+compound module, and the entire system was tested using a testbench. The
+results of the simulation were analyzed to determine the cycle count of the
+system.
+
+After confirming the correctness of the multiplication and division modules, and 
 
 
 \section*{Design}
 
 Starting with the multiplication module, the prescribed datapath was followed.
-However, rather than using strucutual components such as multiplexers to 
+However, rather than relying solely on structural components, such as
+multiplexers, to construct the data path, behavioral Verilog was employed to
+partially define the flow of data.
+
 
 
 \section*{Testing Methodology}
 
 
 \section*{Evaluation}
+
+The simulation results are as follows:
+%
+% 0xdeadbeef * 0x10000000 = ?
+% 0xf5fe4fbc / 0x00004eb6 = ?
+% 0x0a01b044 % 0xffffb14a = ?
+% 0xf5fe4fbc /u 0x00004eb6 = ? (unsigned)
+% 0x0a01b044 %u 0xffffb14a = ? (unsigned)
+%
+\begin{center}
+    \begin{tabular}{|c | c | c | c| c|} 
+ \hline
+ Register A & Operation & Register B & Result & Number of Cycles \\
+ \hline\hline
+ 0xdeadbeef & * & 0x1000000 & 0xfdeadbeef0000000 & 33 \\ 
+ \hline
+ 0xf5fe4fbc & / &0x00004eb6 & 0xffffdf75 & 33 \\ 
+ \hline
+ 0x0a01b044 & \% & 0xffffb14a & 0x00003372 & 33 \\ 
+ \hline
+ 0xf5fe4fbc & /u & 0x00004eb6 & 0x00032012 & 33 \\ 
+ \hline
+ 0x0a01b044 & \%u & 0xffffb14a & 0x0a01b044 & 33 \\ 
+ \hline
+
+\end{tabular}
+\end{center}
+See Appendix A for a screenshot of the simulation results.
+
+\section*{Appendix A}
+
+\includegraphics[scale=0.3]{/Users/bryansebaraj/Desktop/Screenshot 2025-01-28 at 10.06.00 PM.png}
+
 
 
 

@@ -89,6 +89,28 @@ INPUT /Users/bryansebaraj/Library/TinyTeX/texmf-dist/fonts/tfm/public/cm/cmr17.t
 INPUT /Users/bryansebaraj/Library/TinyTeX/texmf-dist/fonts/tfm/public/cm/cmbx12.tfm
 OUTPUT report.pdf
 INPUT /Users/bryansebaraj/Library/TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map
+INPUT /Users/bryansebaraj/Library/TinyTeX/texmf-dist/fonts/tfm/public/cm/cmr8.tfm
+INPUT /Users/bryansebaraj/Library/TinyTeX/texmf-dist/fonts/tfm/public/cm/cmr6.tfm
+INPUT /Users/bryansebaraj/Library/TinyTeX/texmf-dist/fonts/tfm/public/cm/cmmi12.tfm
+INPUT /Users/bryansebaraj/Library/TinyTeX/texmf-dist/fonts/tfm/public/cm/cmmi8.tfm
+INPUT /Users/bryansebaraj/Library/TinyTeX/texmf-dist/fonts/tfm/public/cm/cmmi6.tfm
+INPUT /Users/bryansebaraj/Library/TinyTeX/texmf-dist/fonts/tfm/public/cm/cmsy10.tfm
+INPUT /Users/bryansebaraj/Library/TinyTeX/texmf-dist/fonts/tfm/public/cm/cmsy8.tfm
+INPUT /Users/bryansebaraj/Library/TinyTeX/texmf-dist/fonts/tfm/public/cm/cmsy6.tfm
+INPUT /Users/bryansebaraj/Library/TinyTeX/texmf-dist/fonts/tfm/public/cm/cmex10.tfm
+INPUT /Users/bryansebaraj/Library/TinyTeX/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex8.tfm
+INPUT /Users/bryansebaraj/Library/TinyTeX/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm
+INPUT /Users/bryansebaraj/Library/TinyTeX/texmf-dist/fonts/tfm/public/amsfonts/symbols/msam10.tfm
+INPUT /Users/bryansebaraj/Library/TinyTeX/texmf-dist/fonts/tfm/public/amsfonts/symbols/msam10.tfm
+INPUT /Users/bryansebaraj/Library/TinyTeX/texmf-dist/fonts/tfm/public/amsfonts/symbols/msam7.tfm
+INPUT /Users/bryansebaraj/Library/TinyTeX/texmf-dist/fonts/tfm/public/amsfonts/symbols/msbm10.tfm
+INPUT /Users/bryansebaraj/Library/TinyTeX/texmf-dist/fonts/tfm/public/amsfonts/symbols/msbm10.tfm
+INPUT /Users/bryansebaraj/Library/TinyTeX/texmf-dist/fonts/tfm/public/amsfonts/symbols/msbm7.tfm
+INPUT /Users/bryansebaraj/Desktop/Screenshot 2025-01-28 at 10.06.00 PM.png
+INPUT /Users/bryansebaraj/Desktop/Screenshot 2025-01-28 at 10.06.00 PM.png
+INPUT /Users/bryansebaraj/Desktop/Screenshot 2025-01-28 at 10.06.00 PM.png
+INPUT /Users/bryansebaraj/Desktop/Screenshot 2025-01-28 at 10.06.00 PM.png
+INPUT /Users/bryansebaraj/Desktop/Screenshot 2025-01-28 at 10.06.00 PM.png
 INPUT report.aux
 INPUT /Users/bryansebaraj/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb
 INPUT /Users/bryansebaraj/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb
