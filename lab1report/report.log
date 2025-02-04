@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.8.30)  28 JAN 2025 22:50
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.8.30)  29 JAN 2025 23:40
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -248,14 +248,16 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 [1
 
 {/Users/bryansebaraj/Library/TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
-</Users/bryansebaraj/Desktop/Screenshot 2025-01-28 at 10.06.00 PM.png, id=9, 867.24pt x 723.70375pt>
+
+[2]
+</Users/bryansebaraj/Desktop/Screenshot 2025-01-28 at 10.06.00 PM.png, id=12, 867.24pt x 723.70375pt>
 File: /Users/bryansebaraj/Desktop/Screenshot 2025-01-28 at 10.06.00 PM.png Graphic file (type png)
 <use /Users/bryansebaraj/Desktop/Screenshot 2025-01-28 at 10.06.00 PM.png>
-Package pdftex.def Info: /Users/bryansebaraj/Desktop/Screenshot 2025-01-28 at 10.06.00 PM.png  used on input line 97.
+Package pdftex.def Info: /Users/bryansebaraj/Desktop/Screenshot 2025-01-28 at 10.06.00 PM.png  used on input line 127.
 (pdftex.def)             Requested size: 260.17401pt x 217.1128pt.
 
 
-[2 </Users/bryansebaraj/Desktop/Screenshot 2025-01-28 at 10.06.00 PM.png>] (./report.aux)
+[3 </Users/bryansebaraj/Desktop/Screenshot 2025-01-28 at 10.06.00 PM.png>] (./report.aux)
  ***********
 LaTeX2e <2024-06-01> patch level 2
 L3 programming layer <2024-08-16>
@@ -264,16 +266,16 @@ L3 programming layer <2024-08-16>
 Here is how much of TeX's memory you used:
  3931 strings out of 475539
  60487 string characters out of 5776665
- 1932957 words of memory out of 5000000
+ 1933957 words of memory out of 5000000
  26553 multiletter control sequences out of 15000+600000
  566218 words of font info for 68 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 57i,11n,65p,222b,242s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 57i,11n,65p,385b,244s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </Users/bryansebaraj/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></Users/bryansebaraj/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></Users/bryansebaraj/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb>
-Output written on report.pdf (2 pages, 1545394 bytes).
+Output written on report.pdf (3 pages, 1548945 bytes).
 PDF statistics:
- 29 PDF objects out of 1000 (max. 8388607)
- 16 compressed objects within 1 object stream
+ 32 PDF objects out of 1000 (max. 8388607)
+ 18 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  6 words of extra memory for PDF output out of 10000 (max. 10000000)
 
