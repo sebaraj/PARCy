@@ -75,6 +75,14 @@ module parc_Core
   wire        stall_Mhl;
   wire        stall_Whl;
 
+  wire        rs_X_byp_Dhl;
+  wire        rt_X_byp_Dhl;
+  wire        rs_M_byp_Dhl;
+  wire        rt_M_byp_Dhl;
+  wire        rs_W_byp_Dhl;
+  wire        rt_W_byp_Dhl;
+
+
   wire        branch_cond_eq_Xhl;
   wire        branch_cond_zero_Xhl;
   wire        branch_cond_neg_Xhl;
@@ -172,6 +180,14 @@ module parc_Core
     .stall_Mhl              (stall_Mhl),
     .stall_Whl              (stall_Whl),
 
+    .rs_X_byp_Dhl (rs_X_byp_Dhl),
+    .rt_X_byp_Dhl (rt_X_byp_Dhl),
+    .rs_M_byp_Dhl (rs_M_byp_Dhl),
+    .rt_M_byp_Dhl (rt_M_byp_Dhl),
+    .rs_W_byp_Dhl (rs_W_byp_Dhl),
+    .rt_W_byp_Dhl (rt_W_byp_Dhl),
+
+
     // Control Signals (dpath->ctrl)
 
     .branch_cond_eq_Xhl     (branch_cond_eq_Xhl),
@@ -228,6 +244,14 @@ module parc_Core
     .stall_Xhl               (stall_Xhl),
     .stall_Mhl               (stall_Mhl),
     .stall_Whl               (stall_Whl),
+
+    .rs_X_byp_Dhl (rs_X_byp_Dhl),
+    .rt_X_byp_Dhl (rt_X_byp_Dhl),
+    .rs_M_byp_Dhl (rs_M_byp_Dhl),
+    .rt_M_byp_Dhl (rt_M_byp_Dhl),
+    .rs_W_byp_Dhl (rs_W_byp_Dhl),
+    .rt_W_byp_Dhl (rt_W_byp_Dhl),
+
 
     // Control Signals (dpath->ctrl)
 

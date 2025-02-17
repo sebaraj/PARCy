@@ -56,12 +56,12 @@ module parc_Core
   wire  [2:0] op1_mux_sel_Dhl;
   wire [31:0] inst_Dhl;
   wire  [3:0] alu_fn_Xhl;
-  wire  [2:0] muldivreq_msg_fn_Xhl;
+  // wire  [2:0] muldivreq_msg_fn_Xhl;
   wire        muldivreq_val;
   wire        muldivreq_rdy;
   wire        muldivresp_val;
   wire        muldivresp_rdy;
-  wire        muldiv_mux_sel_Xhl;
+  // wire        muldiv_mux_sel_Xhl;
   wire        execute_mux_sel_Xhl;
   wire  [2:0] dmemresp_mux_sel_Mhl;
   wire        dmemresp_queue_en_Mhl;
@@ -74,6 +74,24 @@ module parc_Core
   wire        stall_Xhl;
   wire        stall_Mhl;
   wire        stall_Whl;
+
+  wire        rs_X_byp_Dhl;
+  wire        rt_X_byp_Dhl;
+  wire        rs_M_byp_Dhl;
+  wire        rt_M_byp_Dhl;
+  wire        rs_W_byp_Dhl;
+  wire        rt_W_byp_Dhl;
+
+  wire [2:0]  muldivreq_msg_fn_Dhl;
+  wire        muldiv_mux_sel_X3hl;
+  wire        execute_mux_sel_X3hl;
+  wire        stall_X3hl;
+  wire        stall_X2hl;
+  wire        rs_X3_byp_Dhl;
+  wire        rt_X3_byp_Dhl;
+  wire        rs_X2_byp_Dhl;
+  wire        rt_X2_byp_Dhl;
+
 
   wire        branch_cond_eq_Xhl;
   wire        branch_cond_zero_Xhl;
@@ -153,12 +171,12 @@ module parc_Core
     .op1_mux_sel_Dhl        (op1_mux_sel_Dhl),
     .inst_Dhl               (inst_Dhl),
     .alu_fn_Xhl             (alu_fn_Xhl),
-    .muldivreq_msg_fn_Xhl   (muldivreq_msg_fn_Xhl),
+    // .muldivreq_msg_fn_Xhl   (muldivreq_msg_fn_Xhl),
     .muldivreq_val          (muldivreq_val),
     .muldivreq_rdy          (muldivreq_rdy),
     .muldivresp_val         (muldivresp_val),
     .muldivresp_rdy         (muldivresp_rdy),
-    .muldiv_mux_sel_Xhl     (muldiv_mux_sel_Xhl),
+    // .muldiv_mux_sel_Xhl     (muldiv_mux_sel_Xhl),
     .execute_mux_sel_Xhl    (execute_mux_sel_Xhl),
     .dmemresp_mux_sel_Mhl   (dmemresp_mux_sel_Mhl),
     .dmemresp_queue_en_Mhl  (dmemresp_queue_en_Mhl),
@@ -171,6 +189,24 @@ module parc_Core
     .stall_Xhl              (stall_Xhl),
     .stall_Mhl              (stall_Mhl),
     .stall_Whl              (stall_Whl),
+
+    .rs_X_byp_Dhl (rs_X_byp_Dhl),
+    .rt_X_byp_Dhl (rt_X_byp_Dhl),
+    .rs_M_byp_Dhl (rs_M_byp_Dhl),
+    .rt_M_byp_Dhl (rt_M_byp_Dhl),
+    .rs_W_byp_Dhl (rs_W_byp_Dhl),
+    .rt_W_byp_Dhl (rt_W_byp_Dhl),
+
+    .muldivreq_msg_fn_Dhl (muldivreq_msg_fn_Dhl),
+    .muldiv_mux_sel_X3hl (muldiv_mux_sel_X3hl),
+    .execute_mux_sel_X3hl (execute_mux_sel_X3hl),
+    .stall_X3hl (stall_X3hl),
+    .stall_X2hl (stall_X2hl),
+    .rs_X3_byp_Dhl (rs_X3_byp_Dhl),
+    .rt_X3_byp_Dhl (rt_X3_byp_Dhl),
+    .rs_X2_byp_Dhl (rs_X2_byp_Dhl),
+    .rt_X2_byp_Dhl (rt_X2_byp_Dhl),
+
 
     // Control Signals (dpath->ctrl)
 
@@ -210,12 +246,12 @@ module parc_Core
     .op1_mux_sel_Dhl         (op1_mux_sel_Dhl),
     .inst_Dhl                (inst_Dhl),
     .alu_fn_Xhl              (alu_fn_Xhl),
-    .muldivreq_msg_fn_Xhl    (muldivreq_msg_fn_Xhl),
+    // .muldivreq_msg_fn_Xhl    (muldivreq_msg_fn_Xhl),
     .muldivreq_val           (muldivreq_val),
     .muldivreq_rdy           (muldivreq_rdy),
     .muldivresp_val          (muldivresp_val),
     .muldivresp_rdy          (muldivresp_rdy),
-    .muldiv_mux_sel_Xhl      (muldiv_mux_sel_Xhl),
+    // .muldiv_mux_sel_Xhl      (muldiv_mux_sel_Xhl),
     .execute_mux_sel_Xhl     (execute_mux_sel_Xhl),
     .dmemresp_mux_sel_Mhl    (dmemresp_mux_sel_Mhl),
     .dmemresp_queue_en_Mhl   (dmemresp_queue_en_Mhl),
@@ -228,6 +264,25 @@ module parc_Core
     .stall_Xhl               (stall_Xhl),
     .stall_Mhl               (stall_Mhl),
     .stall_Whl               (stall_Whl),
+    
+    .rs_X_byp_Dhl (rs_X_byp_Dhl),
+    .rt_X_byp_Dhl (rt_X_byp_Dhl),
+    .rs_M_byp_Dhl (rs_M_byp_Dhl),
+    .rt_M_byp_Dhl (rt_M_byp_Dhl),
+    .rs_W_byp_Dhl (rs_W_byp_Dhl),
+    .rt_W_byp_Dhl (rt_W_byp_Dhl),
+
+
+    .muldivreq_msg_fn_Dhl (muldivreq_msg_fn_Dhl),
+    .muldiv_mux_sel_X3hl (muldiv_mux_sel_X3hl),
+    .execute_mux_sel_X3hl (execute_mux_sel_X3hl),
+    .stall_X3hl (stall_X3hl),
+    .stall_X2hl (stall_X2hl),
+    .rs_X3_byp_Dhl (rs_X3_byp_Dhl),
+    .rt_X3_byp_Dhl (rt_X3_byp_Dhl),
+    .rs_X2_byp_Dhl (rs_X2_byp_Dhl),
+    .rt_X2_byp_Dhl (rt_X2_byp_Dhl),
+
 
     // Control Signals (dpath->ctrl)
 
