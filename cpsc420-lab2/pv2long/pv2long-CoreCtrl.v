@@ -33,7 +33,7 @@ module parc_CoreCtrl
   output  [2:0]     op1_mux_sel_Dhl,
   output [31:0]     inst_Dhl,
   output reg [3:0]  alu_fn_Xhl,
-  // output reg [2:0]  muldivreq_msg_fn_Xhl,
+  output reg [2:0]  muldivreq_msg_fn_Xhl,
   output            muldivreq_val,
   input             muldivreq_rdy,
   input             muldivresp_val,
@@ -52,22 +52,25 @@ module parc_CoreCtrl
   output wire       stall_Mhl,
   output wire       stall_Whl,
 
-  output rs_X_byp_Dhl,
-  output rt_X_byp_Dhl,
-  output rs_M_byp_Dhl,
-  output rt_M_byp_Dhl,
-  output rs_W_byp_Dhl,
-  output rt_W_byp_Dhl,
+  output [2:0]     op0_byp_mux_sel_Dhl,
+  output [2:0]     op1_byp_mux_sel_Dhl,
 
-  output reg [2:0]  muldivreq_msg_fn_Dhl,
+  // output rs_X_byp_Dhl,
+  // output rt_X_byp_Dhl,
+  // output rs_M_byp_Dhl,
+  // output rt_M_byp_Dhl,
+  // output rs_W_byp_Dhl,
+  // output rt_W_byp_Dhl,
+
+  // output reg [2:0]  muldivreq_msg_fn_Dhl,
   output reg muldiv_mux_sel_X3hl,
   output reg execute_mux_sel_X3hl,
   output stall_X3hl,
   output stall_X2hl,
-  output rs_X3_byp_Dhl,
-  output rt_X3_byp_Dhl,
-  output rs_X2_byp_Dhl,
-  output rt_X2_byp_Dhl,
+  // output rs_X3_byp_Dhl,
+  // output rt_X3_byp_Dhl,
+  // output rs_X2_byp_Dhl,
+  // output rt_X2_byp_Dhl,
 
 
 
@@ -467,10 +470,10 @@ module parc_CoreCtrl
 
   // Muldiv Function
 
-  // wire [2:0]
+  wire [2:0] muldivreq_msg_fn_Dhl = cs[`PARC_INST_MSG_MULDIV_FN];
   // assign muldivreq_msg_fn_Dhl = cs[`PARC_INST_MSG_MULDIV_FN];
   always @ (*) begin
-    muldivreq_msg_fn_Dhl = cs[`PARC_INST_MSG_MULDIV_FN];
+    muldivreq_msg_fn_Xhl = muldivreq_msg_fn_Dhl;
   end
 
   // Muldiv Controls
@@ -562,47 +565,62 @@ module parc_CoreCtrl
   //
   wire stall_hazard_Dhl = rs_X_byp_Dhl || rt_X_byp_Dhl || rs_M_byp_Dhl || rt_M_byp_Dhl || rs_X2_byp_Dhl || rt_X2_byp_Dhl || rs_X3_byp_Dhl || rs_X3_byp_Dhl || rs_W_byp_Dhl || rt_W_byp_Dhl;
 
-  assign rs_X_byp_Dhl = inst_val_Dhl &&
+  wire rs_X_byp_Dhl = inst_val_Dhl &&
                             ( rs_en_Dhl && inst_val_Xhl && rf_wen_Xhl
                               && ( rs_addr_Dhl == rf_waddr_Xhl )
                               && ( rf_waddr_Xhl != 5'd0 ) );
 
-  assign rt_X_byp_Dhl = inst_val_Dhl &&
+  wire rt_X_byp_Dhl = inst_val_Dhl &&
                             ( rt_en_Dhl && inst_val_Xhl && rf_wen_Xhl
                               && ( rt_addr_Dhl == rf_waddr_Xhl )
                               && ( rf_waddr_Xhl != 5'd0 ) );
-  assign rs_M_byp_Dhl = inst_val_Dhl &&
+  wire rs_M_byp_Dhl = inst_val_Dhl &&
                             ( rs_en_Dhl && inst_val_Mhl && rf_wen_Mhl
                               && ( rs_addr_Dhl == rf_waddr_Mhl )
                               && ( rf_waddr_Mhl != 5'd0 ) );
-  assign rt_M_byp_Dhl = inst_val_Dhl &&
+  wire rt_M_byp_Dhl = inst_val_Dhl &&
                             ( rt_en_Dhl && inst_val_Mhl && rf_wen_Mhl
                               && ( rt_addr_Dhl == rf_waddr_Mhl )
                               && ( rf_waddr_Mhl != 5'd0 ) );
-  assign rs_X2_byp_Dhl = inst_val_Dhl &&
+  wire rs_X2_byp_Dhl = inst_val_Dhl &&
                             ( rs_en_Dhl && inst_val_X2hl && rf_wen_X2hl
                               && ( rs_addr_Dhl == rf_waddr_X2hl )
                               && ( rf_waddr_X2hl != 5'd0 ) );
-  assign rt_X2_byp_Dhl = inst_val_Dhl &&
+  wire rt_X2_byp_Dhl = inst_val_Dhl &&
                             ( rt_en_Dhl && inst_val_X2hl && rf_wen_X2hl
                               && ( rt_addr_Dhl == rf_waddr_X2hl )
                               && ( rf_waddr_X2hl != 5'd0 ) );
-  assign rs_X3_byp_Dhl = inst_val_Dhl &&
+  wire rs_X3_byp_Dhl = inst_val_Dhl &&
                             ( rs_en_Dhl && inst_val_X3hl && rf_wen_X3hl
                               && ( rs_addr_Dhl == rf_waddr_X3hl )
                               && ( rf_waddr_X3hl != 5'd0 ) );
-  assign rt_X3_byp_Dhl = inst_val_Dhl &&
+  wire rt_X3_byp_Dhl = inst_val_Dhl &&
                             ( rt_en_Dhl && inst_val_X3hl && rf_wen_X3hl
                               && ( rt_addr_Dhl == rf_waddr_X3hl )
                               && ( rf_waddr_X3hl != 5'd0 ) );
-  assign rs_W_byp_Dhl = inst_val_Dhl &&
+  wire rs_W_byp_Dhl = inst_val_Dhl &&
                             ( rs_en_Dhl && inst_val_Whl && rf_wen_Whl
                               && ( rs_addr_Dhl == rf_waddr_Whl )
                               && ( rf_waddr_Whl != 5'd0 ) );
-  assign rt_W_byp_Dhl = inst_val_Dhl &&
+  wire rt_W_byp_Dhl = inst_val_Dhl &&
                             ( rt_en_Dhl && inst_val_Whl && rf_wen_Whl
                               && ( rt_addr_Dhl == rf_waddr_Whl )
                               && ( rf_waddr_Whl != 5'd0 ) );
+
+  assign op0_byp_mux_sel_Dhl = (rs_X_byp_Dhl) ? 3'd0
+                             : (rs_M_byp_Dhl) ? 3'd1
+                             : (rs_X2_byp_Dhl) ? 3'd2
+                             : (rs_X3_byp_Dhl) ? 3'd3
+                             : (rs_W_byp_Dhl) ? 3'd4
+                             : 3'd5;
+
+  assign op1_byp_mux_sel_Dhl = (rt_X_byp_Dhl) ? 3'd0
+                             : (rt_M_byp_Dhl) ? 3'd1
+                             : (rt_X2_byp_Dhl) ? 3'd2
+                             : (rt_X3_byp_Dhl) ? 3'd3
+                             : (rt_W_byp_Dhl) ? 3'd4
+                             : 3'd5;
+
 
   // Aggregate Stall Signal
 

@@ -52,12 +52,15 @@ module parc_CoreCtrl
   output wire       stall_Mhl,
   output wire       stall_Whl,
 
-  output rs_X_byp_Dhl,
-  output rt_X_byp_Dhl,
-  output rs_M_byp_Dhl,
-  output rt_M_byp_Dhl,
-  output rs_W_byp_Dhl,
-  output rt_W_byp_Dhl,
+  output [1:0]     op0_byp_mux_sel_Dhl,
+  output [1:0]     op1_byp_mux_sel_Dhl,
+
+  // output rs_X_byp_Dhl,
+  // output rt_X_byp_Dhl,
+  // output rs_M_byp_Dhl,
+  // output rt_M_byp_Dhl,
+  // output rs_W_byp_Dhl,
+  // output rt_W_byp_Dhl,
 
 
   // Control Signals (dpath->ctrl)
@@ -538,31 +541,41 @@ module parc_CoreCtrl
   //                             && ( rt_addr_Dhl == rf_waddr_Whl )
   //                             && ( rf_waddr_Whl != 5'd0 ) ) );
 
-  assign rs_X_byp_Dhl = inst_val_Dhl &&
+  wire rs_X_byp_Dhl = inst_val_Dhl &&
                             ( rs_en_Dhl && inst_val_Xhl && rf_wen_Xhl
                               && ( rs_addr_Dhl == rf_waddr_Xhl )
                               && ( rf_waddr_Xhl != 5'd0 ) );
 
-  assign rt_X_byp_Dhl = inst_val_Dhl &&
+  wire rt_X_byp_Dhl = inst_val_Dhl &&
                             ( rt_en_Dhl && inst_val_Xhl && rf_wen_Xhl
                               && ( rt_addr_Dhl == rf_waddr_Xhl )
                               && ( rf_waddr_Xhl != 5'd0 ) );
-  assign rs_M_byp_Dhl = inst_val_Dhl &&
+  wire rs_M_byp_Dhl = inst_val_Dhl &&
                             ( rs_en_Dhl && inst_val_Mhl && rf_wen_Mhl
                               && ( rs_addr_Dhl == rf_waddr_Mhl )
                               && ( rf_waddr_Mhl != 5'd0 ) );
-  assign rt_M_byp_Dhl = inst_val_Dhl &&
+  wire rt_M_byp_Dhl = inst_val_Dhl &&
                             ( rt_en_Dhl && inst_val_Mhl && rf_wen_Mhl
                               && ( rt_addr_Dhl == rf_waddr_Mhl )
                               && ( rf_waddr_Mhl != 5'd0 ) );
-  assign rs_W_byp_Dhl = inst_val_Dhl &&
+  wire rs_W_byp_Dhl = inst_val_Dhl &&
                             ( rs_en_Dhl && inst_val_Whl && rf_wen_Whl
                               && ( rs_addr_Dhl == rf_waddr_Whl )
                               && ( rf_waddr_Whl != 5'd0 ) );
-  assign rt_W_byp_Dhl = inst_val_Dhl &&
+  wire rt_W_byp_Dhl = inst_val_Dhl &&
                             ( rt_en_Dhl && inst_val_Whl && rf_wen_Whl
                               && ( rt_addr_Dhl == rf_waddr_Whl )
                               && ( rf_waddr_Whl != 5'd0 ) );
+
+  assign op0_byp_mux_sel_Dhl = (rs_X_byp_Dhl) ? 2'd0
+                             : (rs_M_byp_Dhl) ? 2'd1
+                             : (rs_W_byp_Dhl) ? 2'd2
+                             : 2'd3;
+
+  assign op1_byp_mux_sel_Dhl = (rt_X_byp_Dhl) ? 2'd0
+                             : (rt_M_byp_Dhl) ? 2'd1
+                             : (rt_W_byp_Dhl) ? 2'd2
+                             : 2'd3;
 
   // Aggregate Stall Signal
 
