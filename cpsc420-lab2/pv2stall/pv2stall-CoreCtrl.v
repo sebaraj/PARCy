@@ -606,16 +606,16 @@ module parc_CoreCtrl
 
   wire bne_resolve_Xhl  = ~branch_cond_eq_Xhl;
   wire beq_resolve_Xhl  =  branch_cond_eq_Xhl;
-  wire blez_resolve_Xhl =  branch_cond_neg_Xhl  ||   branch_cond_zero_Xhl;
-  wire bgtz_resolve_Xhl = ~branch_cond_neg_Xhl  &&  ~branch_cond_zero_Xhl;
+  wire blez_resolve_Xhl =  branch_cond_neg_Xhl || branch_cond_zero_Xhl;
+  wire bgtz_resolve_Xhl = ~branch_cond_neg_Xhl && ~branch_cond_zero_Xhl;
   wire bgez_resolve_Xhl = ~branch_cond_neg_Xhl;
-  wire bltz_resolve_Xhl =  branch_cond_neg_Xhl  &&  ~branch_cond_zero_Xhl;
+  wire bltz_resolve_Xhl =  branch_cond_neg_Xhl && ~branch_cond_zero_Xhl;
 
 
   // Resolve Branch
 
   wire bne_taken_Xhl  = ( ( br_sel_Xhl == br_bne ) && bne_resolve_Xhl );
-  wire beq_taken_Xhl  = ( ( br_sel_Xhl == br_beq )  && beq_resolve_Xhl );
+  wire beq_taken_Xhl  = ( ( br_sel_Xhl == br_beq ) && beq_resolve_Xhl );
   wire blez_taken_Xhl = ( ( br_sel_Xhl == br_blez ) && blez_resolve_Xhl );
   wire bgtz_taken_Xhl = ( ( br_sel_Xhl == br_bgtz ) && bgtz_resolve_Xhl );
   wire bgez_taken_Xhl = ( ( br_sel_Xhl == br_bgez ) && bgez_resolve_Xhl );
@@ -649,8 +649,8 @@ module parc_CoreCtrl
 
   wire bubble_sel_Xhl  = ( squash_Xhl || stall_Xhl );
   wire bubble_next_Xhl = ( !bubble_sel_Xhl ) ? bubble_Xhl
-                       : ( bubble_sel_Xhl )  ? 1'b1
-                       :                       1'bx;
+                       : ( bubble_sel_Xhl ) ? 1'b1
+                       : 1'bx;
 
   //----------------------------------------------------------------------
   // M <- X

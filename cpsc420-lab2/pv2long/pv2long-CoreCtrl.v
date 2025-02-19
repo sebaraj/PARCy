@@ -54,24 +54,10 @@ module parc_CoreCtrl
 
   output [2:0]     op0_byp_mux_sel_Dhl,
   output [2:0]     op1_byp_mux_sel_Dhl,
-
-  // output rs_X_byp_Dhl,
-  // output rt_X_byp_Dhl,
-  // output rs_M_byp_Dhl,
-  // output rt_M_byp_Dhl,
-  // output rs_W_byp_Dhl,
-  // output rt_W_byp_Dhl,
-
-  // output reg [2:0]  muldivreq_msg_fn_Dhl,
-  output reg muldiv_mux_sel_X3hl,
-  output reg execute_mux_sel_X3hl,
-  output stall_X3hl,
-  output stall_X2hl,
-  // output rs_X3_byp_Dhl,
-  // output rt_X3_byp_Dhl,
-  // output rs_X2_byp_Dhl,
-  // output rt_X2_byp_Dhl,
-
+  output reg       muldiv_mux_sel_X3hl,
+  output reg       execute_mux_sel_X3hl,
+  output           stall_X3hl,
+  output           stall_X2hl,
 
 
   // Control Signals (dpath->ctrl)
@@ -365,7 +351,7 @@ module parc_CoreCtrl
     cs = {cs_sz{1'bx}}; // Default to invalid instruction
 
     casez ( ir_Dhl )
-
+      // TODO: fix individual instruction ctrls
       //                               j     br       pc      op0      rs op1      rt alu       md       md md     ex      mem  mem   memresp wb      rf      cp0
       //                           val taken type     muxsel  muxsel   en muxsel   en fn        fn       en muxsel muxsel  rq   len   muxsel  muxsel  wen wa  wen
       `PARC_INST_MSG_NOP     :cs={ y,  n,    br_none, pm_p,   am_x,    n, bm_x,    n, alu_x,    md_x,    n, mdm_x, em_x,   nr,  ml_x, dmm_x,  wm_x,   n,  rx, n   };
@@ -471,7 +457,6 @@ module parc_CoreCtrl
   // Muldiv Function
 
   wire [2:0] muldivreq_msg_fn_Dhl = cs[`PARC_INST_MSG_MULDIV_FN];
-  // assign muldivreq_msg_fn_Dhl = cs[`PARC_INST_MSG_MULDIV_FN];
   always @ (*) begin
     muldivreq_msg_fn_Xhl = muldivreq_msg_fn_Dhl;
   end
@@ -534,6 +519,7 @@ module parc_CoreCtrl
   wire is_muldiv_Dhl = (cs[`PARC_INST_MSG_EX_SEL] == em_md);
 
   // check for load use dep
+  // X2/X3/W for load use?
   wire stall_load_use_dep_Dhl = (is_load_Xhl && (rs_X_byp_Dhl || rt_X_byp_Dhl)) || (is_load_Mhl && (rs_M_byp_Dhl || rt_M_byp_Dhl));
 
   // Stall for data hazards if either of the operand read addresses are
@@ -728,7 +714,7 @@ module parc_CoreCtrl
   // Resolve Branch
 
   wire bne_taken_Xhl  = ( ( br_sel_Xhl == br_bne ) && bne_resolve_Xhl );
-  wire beq_taken_Xhl  = ( ( br_sel_Xhl == br_beq )  && beq_resolve_Xhl );
+  wire beq_taken_Xhl  = ( ( br_sel_Xhl == br_beq ) && beq_resolve_Xhl );
   wire blez_taken_Xhl = ( ( br_sel_Xhl == br_blez ) && blez_resolve_Xhl );
   wire bgtz_taken_Xhl = ( ( br_sel_Xhl == br_bgtz ) && bgtz_resolve_Xhl );
   wire bgez_taken_Xhl = ( ( br_sel_Xhl == br_bgez ) && bgez_resolve_Xhl );
@@ -756,15 +742,14 @@ module parc_CoreCtrl
 
   // Aggregate Stall Signal
 
-  assign stall_Xhl = ( stall_Mhl || stall_imem_Xhl || stall_dmem_Xhl ); // deleted
-  // stall_muldiv_Xhl ||
+  assign stall_Xhl = ( stall_Mhl || stall_imem_Xhl || stall_dmem_Xhl ); // deleted stall_muldiv_Xhl ||
 
   // Next bubble bit
 
   wire bubble_sel_Xhl  = ( squash_Xhl || stall_Xhl );
   wire bubble_next_Xhl = ( !bubble_sel_Xhl ) ? bubble_Xhl
-                       : ( bubble_sel_Xhl )  ? 1'b1
-                       :                       1'bx;
+                       : ( bubble_sel_Xhl ) ? 1'b1
+                       : 1'bx;
 
   //----------------------------------------------------------------------
   // M <- X
@@ -841,8 +826,8 @@ module parc_CoreCtrl
 
   wire bubble_sel_Mhl  = ( squash_Mhl || stall_Mhl );
   wire bubble_next_Mhl = ( !bubble_sel_Mhl ) ? bubble_Mhl
-                       : ( bubble_sel_Mhl )  ? 1'b1
-                       :                       1'bx;
+                       : ( bubble_sel_Mhl ) ? 1'b1
+                       : 1'bx;
 
   //----------------------------------------------------------------------
   // W <- X3 <- X2 <- M
@@ -865,8 +850,6 @@ module parc_CoreCtrl
   reg cp0_wen_X3hl;
   reg [4:0] cp0_addr_X3hl;
   reg bubble_X3hl;
-  // reg muldiv_mux_sel_X3hl;
-  // reg execute_mux_sel_X3hl;
   reg muldivreq_val_X3hl;
 
 
@@ -901,9 +884,9 @@ module parc_CoreCtrl
     dmemresp_queue_val_Mhl  <= dmemresp_queue_val_next_Mhl;
   end
 
-  wire inst_val_X2hl = ( !bubble_X2hl && !squash_X2hl );
   wire squash_X2hl = 1'b0;
   assign stall_X2hl = 1'b0;
+  wire inst_val_X2hl = ( !bubble_X2hl && !squash_X2hl );
   wire bubble_sel_X2hl  = ( squash_X2hl || stall_X2hl );
   wire bubble_next_X2hl = ( !bubble_sel_X2hl ) ? bubble_X2hl : ( bubble_sel_X2hl )  ? 1'b1 : 1'bx;
 
@@ -924,14 +907,14 @@ module parc_CoreCtrl
     end
   end
 
-  wire inst_val_X3hl = ( !bubble_X3hl && !squash_X3hl );
   wire squash_X3hl = 1'b0;
   assign stall_X3hl = ( muldivreq_val_X3hl && inst_val_X3hl && !muldivresp_val );
+  wire inst_val_X3hl = ( !bubble_X3hl && !squash_X3hl );
   assign muldivresp_rdy = !stall_X3hl;
   wire bubble_sel_X3hl  = ( squash_X3hl || stall_X3hl );
   wire bubble_next_X3hl = ( !bubble_sel_X3hl ) ? bubble_X3hl
-                        : ( bubble_sel_X3hl )  ? 1'b1
-                        :                        1'bx;
+                        : ( bubble_sel_X3hl ) ? 1'b1
+                        : 1'bx;
 
   always @ ( posedge clk ) begin
     if ( reset ) begin

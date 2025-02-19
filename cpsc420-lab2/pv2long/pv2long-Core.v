@@ -75,26 +75,13 @@ module parc_Core
   wire        stall_Mhl;
   wire        stall_Whl;
 
-  wire [2:0] op0_byp_mux_sel_Dhl;
-  wire [2:0] op1_byp_mux_sel_Dhl;
-
-  // wire        rs_X_byp_Dhl;
-  // wire        rt_X_byp_Dhl;
-  // wire        rs_M_byp_Dhl;
-  // wire        rt_M_byp_Dhl;
-  // wire        rs_W_byp_Dhl;
-  // wire        rt_W_byp_Dhl;
-
-  // wire [2:0]  muldivreq_msg_fn_Dhl;
+  wire [2:0]  op0_byp_mux_sel_Dhl;
+  wire [2:0]  op1_byp_mux_sel_Dhl;
   wire        muldiv_mux_sel_X3hl;
   wire        execute_mux_sel_X3hl;
   wire        stall_X3hl;
   wire        stall_X2hl;
-  // wire        rs_X3_byp_Dhl;
-  // wire        rt_X3_byp_Dhl;
-  // wire        rs_X2_byp_Dhl;
-  // wire        rt_X2_byp_Dhl;
-  //
+
 
   wire        branch_cond_eq_Xhl;
   wire        branch_cond_zero_Xhl;
@@ -196,22 +183,10 @@ module parc_Core
     .op0_byp_mux_sel_Dhl (op0_byp_mux_sel_Dhl),
     .op1_byp_mux_sel_Dhl (op1_byp_mux_sel_Dhl),
 
-    // .rs_X_byp_Dhl (rs_X_byp_Dhl),
-    // .rt_X_byp_Dhl (rt_X_byp_Dhl),
-    // .rs_M_byp_Dhl (rs_M_byp_Dhl),
-    // .rt_M_byp_Dhl (rt_M_byp_Dhl),
-    // .rs_W_byp_Dhl (rs_W_byp_Dhl),
-    // .rt_W_byp_Dhl (rt_W_byp_Dhl),
-
-    // .muldivreq_msg_fn_Dhl (muldivreq_msg_fn_Dhl),
     .muldiv_mux_sel_X3hl (muldiv_mux_sel_X3hl),
     .execute_mux_sel_X3hl (execute_mux_sel_X3hl),
     .stall_X3hl (stall_X3hl),
     .stall_X2hl (stall_X2hl),
-    // .rs_X3_byp_Dhl (rs_X3_byp_Dhl),
-    // .rt_X3_byp_Dhl (rt_X3_byp_Dhl),
-    // .rs_X2_byp_Dhl (rs_X2_byp_Dhl),
-    // .rt_X2_byp_Dhl (rt_X2_byp_Dhl),
 
 
     // Control Signals (dpath->ctrl)
@@ -270,27 +245,14 @@ module parc_Core
     .stall_Xhl               (stall_Xhl),
     .stall_Mhl               (stall_Mhl),
     .stall_Whl               (stall_Whl),
-    
+
     .op0_byp_mux_sel_Dhl (op0_byp_mux_sel_Dhl),
     .op1_byp_mux_sel_Dhl (op1_byp_mux_sel_Dhl),
 
-    // .rs_X_byp_Dhl (rs_X_byp_Dhl),
-    // .rt_X_byp_Dhl (rt_X_byp_Dhl),
-    // .rs_M_byp_Dhl (rs_M_byp_Dhl),
-    // .rt_M_byp_Dhl (rt_M_byp_Dhl),
-    // .rs_W_byp_Dhl (rs_W_byp_Dhl),
-    // .rt_W_byp_Dhl (rt_W_byp_Dhl),
-
-
-    // .muldivreq_msg_fn_Dhl (muldivreq_msg_fn_Dhl),
     .muldiv_mux_sel_X3hl (muldiv_mux_sel_X3hl),
     .execute_mux_sel_X3hl (execute_mux_sel_X3hl),
     .stall_X3hl (stall_X3hl),
     .stall_X2hl (stall_X2hl),
-    // .rs_X3_byp_Dhl (rs_X3_byp_Dhl),
-    // .rt_X3_byp_Dhl (rt_X3_byp_Dhl),
-    // .rs_X2_byp_Dhl (rs_X2_byp_Dhl),
-    // .rt_X2_byp_Dhl (rt_X2_byp_Dhl),
 
 
     // Control Signals (dpath->ctrl)

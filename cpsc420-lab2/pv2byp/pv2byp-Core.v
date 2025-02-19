@@ -78,15 +78,6 @@ module parc_Core
   wire [1:0] op0_byp_mux_sel_Dhl;
   wire [1:0] op1_byp_mux_sel_Dhl;
 
-
-  // wire        rs_X_byp_Dhl;
-  // wire        rt_X_byp_Dhl;
-  // wire        rs_M_byp_Dhl;
-  // wire        rt_M_byp_Dhl;
-  // wire        rs_W_byp_Dhl;
-  // wire        rt_W_byp_Dhl;
-
-
   wire        branch_cond_eq_Xhl;
   wire        branch_cond_zero_Xhl;
   wire        branch_cond_neg_Xhl;
@@ -187,14 +178,6 @@ module parc_Core
     .op0_byp_mux_sel_Dhl (op0_byp_mux_sel_Dhl),
     .op1_byp_mux_sel_Dhl (op1_byp_mux_sel_Dhl),
 
-    // .rs_X_byp_Dhl (rs_X_byp_Dhl),
-    // .rt_X_byp_Dhl (rt_X_byp_Dhl),
-    // .rs_M_byp_Dhl (rs_M_byp_Dhl),
-    // .rt_M_byp_Dhl (rt_M_byp_Dhl),
-    // .rs_W_byp_Dhl (rs_W_byp_Dhl),
-    // .rt_W_byp_Dhl (rt_W_byp_Dhl),
-
-
     // Control Signals (dpath->ctrl)
 
     .branch_cond_eq_Xhl     (branch_cond_eq_Xhl),
@@ -254,14 +237,6 @@ module parc_Core
 
     .op0_byp_mux_sel_Dhl (op0_byp_mux_sel_Dhl),
     .op1_byp_mux_sel_Dhl (op1_byp_mux_sel_Dhl),
-
-    // .rs_X_byp_Dhl (rs_X_byp_Dhl),
-    // .rt_X_byp_Dhl (rt_X_byp_Dhl),
-    // .rs_M_byp_Dhl (rs_M_byp_Dhl),
-    // .rt_M_byp_Dhl (rt_M_byp_Dhl),
-    // .rs_W_byp_Dhl (rs_W_byp_Dhl),
-    // .rt_W_byp_Dhl (rt_W_byp_Dhl),
-
 
     // Control Signals (dpath->ctrl)
 

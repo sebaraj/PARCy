@@ -55,14 +55,6 @@ module parc_CoreCtrl
   output [1:0]     op0_byp_mux_sel_Dhl,
   output [1:0]     op1_byp_mux_sel_Dhl,
 
-  // output rs_X_byp_Dhl,
-  // output rt_X_byp_Dhl,
-  // output rs_M_byp_Dhl,
-  // output rt_M_byp_Dhl,
-  // output rs_W_byp_Dhl,
-  // output rt_W_byp_Dhl,
-
-
   // Control Signals (dpath->ctrl)
 
   input             branch_cond_eq_Xhl,
@@ -588,8 +580,8 @@ module parc_CoreCtrl
 
   wire bubble_sel_Dhl  = ( squash_Dhl || stall_Dhl );
   wire bubble_next_Dhl = ( !bubble_sel_Dhl ) ? bubble_Dhl
-                       : ( bubble_sel_Dhl )  ? 1'b1
-                       :                       1'bx;
+                       : ( bubble_sel_Dhl ) ? 1'b1
+                       : 1'bx;
 
   //----------------------------------------------------------------------
   // X <- D
@@ -668,16 +660,16 @@ module parc_CoreCtrl
 
   wire bne_resolve_Xhl  = ~branch_cond_eq_Xhl;
   wire beq_resolve_Xhl  =  branch_cond_eq_Xhl;
-  wire blez_resolve_Xhl =  branch_cond_neg_Xhl  ||   branch_cond_zero_Xhl;
-  wire bgtz_resolve_Xhl = ~branch_cond_neg_Xhl  &&  ~branch_cond_zero_Xhl;
+  wire blez_resolve_Xhl =  branch_cond_neg_Xhl || branch_cond_zero_Xhl;
+  wire bgtz_resolve_Xhl = ~branch_cond_neg_Xhl && ~branch_cond_zero_Xhl;
   wire bgez_resolve_Xhl = ~branch_cond_neg_Xhl;
-  wire bltz_resolve_Xhl =  branch_cond_neg_Xhl  &&  ~branch_cond_zero_Xhl;
+  wire bltz_resolve_Xhl =  branch_cond_neg_Xhl && ~branch_cond_zero_Xhl;
 
 
   // Resolve Branch
 
   wire bne_taken_Xhl  = ( ( br_sel_Xhl == br_bne ) && bne_resolve_Xhl );
-  wire beq_taken_Xhl  = ( ( br_sel_Xhl == br_beq )  && beq_resolve_Xhl );
+  wire beq_taken_Xhl  = ( ( br_sel_Xhl == br_beq ) && beq_resolve_Xhl );
   wire blez_taken_Xhl = ( ( br_sel_Xhl == br_blez ) && blez_resolve_Xhl );
   wire bgtz_taken_Xhl = ( ( br_sel_Xhl == br_bgtz ) && bgtz_resolve_Xhl );
   wire bgez_taken_Xhl = ( ( br_sel_Xhl == br_bgez ) && bgez_resolve_Xhl );
@@ -711,8 +703,8 @@ module parc_CoreCtrl
 
   wire bubble_sel_Xhl  = ( squash_Xhl || stall_Xhl );
   wire bubble_next_Xhl = ( !bubble_sel_Xhl ) ? bubble_Xhl
-                       : ( bubble_sel_Xhl )  ? 1'b1
-                       :                       1'bx;
+                       : ( bubble_sel_Xhl ) ? 1'b1
+                       : 1'bx;
 
   //----------------------------------------------------------------------
   // M <- X
@@ -782,8 +774,8 @@ module parc_CoreCtrl
 
   wire bubble_sel_Mhl  = ( squash_Mhl || stall_Mhl );
   wire bubble_next_Mhl = ( !bubble_sel_Mhl ) ? bubble_Mhl
-                       : ( bubble_sel_Mhl )  ? 1'b1
-                       :                       1'bx;
+                       : ( bubble_sel_Mhl ) ? 1'b1
+                       : 1'bx;
 
   //----------------------------------------------------------------------
   // W <- M
