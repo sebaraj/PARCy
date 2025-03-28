@@ -1546,7 +1546,7 @@ module parc_CoreCtrl (
 
   // Stall for data hazards if either of the operand read addresses are
   // the same as the write addresses of instruction later in the pipeline
-  assign muldivreq_val = inst_val_Dhl && muldivreq_val_Dhl;
+  assign muldivreq_val = inst_val_Dhl && muldivreq_val_Dhl && !stall_Dhl;
   wire stall_use_muldiv_Dhl = (is_muldiv_Xhl && (rs_X_byp_Dhl || rt_X_byp_Dhl)) || (is_muldiv_Mhl && (rs_M_byp_Dhl || rt_M_byp_Dhl)) || (is_muldiv_X2hl && (rs_X2_byp_Dhl || rt_X2_byp_Dhl));
 
   // TODO: split into sep signals

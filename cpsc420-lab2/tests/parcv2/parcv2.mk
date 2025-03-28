@@ -39,5 +39,7 @@ parcv2_srcs += \
   parcv2-rem.S \
   parcv2-remu.S \
   parcv2-loaduse.S \
+  parcv2-mul-pipe.S \
+
 #  parcv2-mfc0.S \
 

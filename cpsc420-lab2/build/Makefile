@@ -96,6 +96,7 @@ tests = \
   parcv2-rem.vmh \
   parcv2-remu.vmh \
   parcv2-loaduse.vmh \
+  parcv2-mul-pipe.vmh \
 
 pv2stall_rtl_sim = pv2stall-sim
 pv2stall_rtl_rand_sim = pv2stall-randdelay-sim

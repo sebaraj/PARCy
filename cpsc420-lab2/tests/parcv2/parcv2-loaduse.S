@@ -22,21 +22,21 @@
         TEST_CHECK_EQ( $4, 0xfffffff0 )
 
         // Test 2: Load byte from tdata_0 offset 1 then immediately add 1.
-        // Offset 1 of 0xdeadbeef yields 0xffffffbe adding 1 gives 0xffffffbf.
+        // Offset 1 of 0xdeadbeef yields 0xffffffbe; adding 1 gives 0xffffffbf.
         la    $5, tdata_0
         lb    $6, 1($5)          // expected 0xffffffbe
         addiu $7, $6, 1          // compute 0xffffffbe + 1 = 0xffffffbf
         TEST_CHECK_EQ( $7, 0xffffffbf )
 
         // Test 3: Load byte from tdata_0 offset 2 then immediately add 2.
-        // Offset 2 yields 0xffffffad adding 2 gives 0xffffffaf.
+        // Offset 2 yields 0xffffffad; adding 2 gives 0xffffffaf.
         la    $8, tdata_0
         lb    $9, 2($8)          // expected 0xffffffad
         addiu $10, $9, 2         // compute 0xffffffad + 2 = 0xffffffaf
         TEST_CHECK_EQ( $10, 0xffffffaf )
 
         // Test 4: Load byte from tdata_0 offset 3 then immediately subtract 1.
-        // Offset 3 yields 0xffffffde subtracting 1 gives 0xffffffdd.
+        // Offset 3 yields 0xffffffde; subtracting 1 gives 0xffffffdd.
         la    $11, tdata_0
         lb    $12, 3($11)        // expected 0xffffffde
         addiu $13, $12, -1       // compute 0xffffffde - 1 = 0xffffffdd
