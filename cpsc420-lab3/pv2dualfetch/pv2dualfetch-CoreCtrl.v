@@ -616,13 +616,7 @@ module parc_CoreCtrl
   assign instA_Dhl = irA_Dhl;
   assign instB_Dhl = irB_Dhl;
     
-  reg [3:0] temp_opA0_byp_mux_sel_Dhl;
-  reg [3:0] temp_opA1_byp_mux_sel_Dhl;
-  assign opA0_byp_mux_sel_Dhl = temp_opA0_byp_mux_sel_Dhl;
-  assign opA1_byp_mux_sel_Dhl = temp_opA1_byp_mux_sel_Dhl;
- 
-  always @(*) begin
-    temp_opA0_byp_mux_sel_Dhl <= (scoreboard[instA_rs_Dhl][8] == 1'b0) ?
+  assign opA0_byp_mux_sel_Dhl = (scoreboard[instA_rs_Dhl][8] == 1'b0) ?
         ((inst_val_X0hl && scoreboard[instA_rs_Dhl][0]) ? am_AX0_byp :
         ((inst_val_X1hl && scoreboard[instA_rs_Dhl][1]) ? am_AX1_byp :
         ((inst_val_X2hl && scoreboard[instA_rs_Dhl][2]) ? am_AX2_byp :
@@ -634,7 +628,7 @@ module parc_CoreCtrl
         ((inst_val_X3hl && scoreboard[instA_rs_Dhl][3]) ? am_BX3_byp :
         ((inst_val_Whl && scoreboard[instA_rs_Dhl][4]) ? am_BW_byp : am_r0)))));
 
-    temp_opA1_byp_mux_sel_Dhl <= (scoreboard[instA_rt_Dhl][8] == 1'b0) ?
+  assign opA1_byp_mux_sel_Dhl = (scoreboard[instA_rt_Dhl][8] == 1'b0) ?
         ((inst_val_X0hl && scoreboard[instA_rt_Dhl][0]) ? bm_AX0_byp :
         ((inst_val_X1hl && scoreboard[instA_rt_Dhl][1]) ? bm_AX1_byp :
         ((inst_val_X2hl && scoreboard[instA_rt_Dhl][2]) ? bm_AX2_byp :
@@ -645,7 +639,6 @@ module parc_CoreCtrl
         ((inst_val_X2hl && scoreboard[instA_rt_Dhl][2]) ? bm_BX2_byp :
         ((inst_val_X3hl && scoreboard[instA_rt_Dhl][3]) ? bm_BX3_byp :
         ((inst_val_Whl && scoreboard[instA_rt_Dhl][4]) ? bm_BW_byp : bm_r1)))));
-  end
 
   // Steering Logic
   reg steering_mux_sel;
