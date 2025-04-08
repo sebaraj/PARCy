@@ -12,4 +12,5 @@ parcv1_srcs += \
   parcv1-sw.S \
   parcv1-jal.S \
   parcv1-jr.S \
+  parcv1-wawhaz.S \
 
