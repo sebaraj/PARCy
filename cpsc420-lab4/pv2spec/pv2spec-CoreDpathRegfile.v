@@ -15,7 +15,6 @@ module parc_CoreDpathRegfile
   input         wen_p,   // Write enable (sample on rising clk edge)
   input  [ 4:0] waddr_p, // Write address (sample on rising clk edge)
   input  [31:0] wdata_p, // Write data (sample on rising clk edge)
-  // Commit interface for ROB writeback
   input         wen_c,   // Commit write enable
   input  [ 4:0] waddr_c, // Commit write address
   input  [31:0] wdata_c  // Commit write data
@@ -24,8 +23,7 @@ module parc_CoreDpathRegfile
   // We use an array of 32 bit register for the regfile itself
   reg [31:0] registers[31:0];
 
-  // Combinational read ports with bypass logic
-  // Prioritize commit stage (C) bypassing over pipeline stage (P) bypassing
+  // Combinational read ports
   assign rdata0 = (raddr0 == 0) ? 32'b0 : 
                   (wen_c && (raddr0 == waddr_c)) ? wdata_c :
                   (wen_p && (raddr0 == waddr_p)) ? wdata_p :
@@ -36,8 +34,6 @@ module parc_CoreDpathRegfile
                   (wen_p && (raddr1 == waddr_p)) ? wdata_p :
                   registers[raddr1];
 
-  // Write port is active when either write enable is asserted
-  // Commit stage has priority over pipeline stage
   always @(posedge clk)
   begin
     if (wen_c && (waddr_c != 5'b0))

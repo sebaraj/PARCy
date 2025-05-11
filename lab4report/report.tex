@@ -59,60 +59,65 @@ Given the existing I2O2 PARCv2 processor without a reorder buffer,
 the I2O1 PARCv2 processor was constructed by adding a reorder buffer, 
 enabling bypassing out of the reorder buffer in the scoreboard, and
 modifying the datapath to enable values to be written from the reorder buffer instead
-of from the writeback stage. Specificaly, the reorder buffer was implemented as
-a 
+of from the writeback stage. Specificaly, the reorder buffer was built as a 
+16-entry circular queue, with
+a four-bit head pointer (commit pointer) and a four-bit tail pointer (allocate
+pointer). Each entry comprised a valid bit, a pending bit, and a five-bit field
+identifying the destination physical register. 
 
-% When augmenting the PARCv2 processor with bypassing, only the control path was
-% modified. In addition to pre-implemented replaced pc\_plus signals, updated
-% register file, and updated memory unit, I added a scoreboard to the datapath.
-% his scoreboard, implemented as a 64x9-bit register array, tracks pending
-% register writes, storing the destination register index, the pipeline stage
-% where the result will be available (X0-W), and instruction type information
-% (ALU, load, mul/div) to manage different latencies and stall requirements. This
-% centralized scoreboard replaces the original explicit combinatorial hazard
-% detection logic for both stalling and bypassing, providing a more systematic
-% way to handle hazards. It determines data-dependent stalls
-% (stall\_A\_Dhl) by checking if an instruction in Decode requires registers marked
-% busy by later stages and directs the operand bypass multiplexers (e.g.,
-% opA0\_byp\_mux\_sel\_Dhl) by indicating which pipeline stage holds the needed
-% result if forwarding is possible. A major deviation was the
-% implementation of dual-issue capability using steering logic (steering\_mux\_sel)
-% to select one of two fetched instructions for the primary 'A' pipeline path,
-% requiring adaptation of control signals (e.g., csA, rfA\_wen\_X0hl) and
-% integrating the scoreboard with this dual-issue structure; consequently, the
-% original hardcoded bypass and specific load/muldiv stall logic was removed.
-%
+Allocation is enabled whenever the buffer is not full, which is detected by \texttt{(head\_ptr ==
+tail\_ptr) \&\& valid[head\_ptr]}, and, upon handshake, records the incoming
+physical register, asserting both valid and pending bits, and advancing the tail
+pointer. The fill port handles writeback requests
+by deasserting the pending bit of the specified slot, marking that
+instruction’s result as ready. Commit logic evaluates \texttt{(valid[head\_ptr] \&\&
+!pending[head\_ptr])} each cycle, and if true, deallocates the head entry, issues
+the register-file write-enable and corresponding write-address outputs, and
+increments the head pointer.
+
+By separating the allocate, fill, and commit pathways and using simple
+pointer arithmetic, this should guarantee precise in-order retirement,
+support scoreboard‐based bypassing of pending values, and remain 
+deadlock-free and readily synthesizable.
+
 \subsubsection*{Objective 2: Out-of-Order PARCv2 Processor with Speculation}
 
-% The implementation focused on enabling parallel execution by adding a second
-% pipeline path (pipeline B) alongside the original (pipeline A), necessitating
-% duplication of key datapath elements like ALU units, bypass multiplexers, and
-% register file write ports (rfB\_wen\_out\_Whl, rfB\_waddr\_Whl). A major deviation
-% and extension from the prescribed single-issue datapath was the introduction of
-% dynamic steering logic (A\_sel\_mux, B\_sel\_mux) in the Decode stage; this logic
-% determines, based on instruction type (e.g., op0\_alu, op1\_alu) and detected
-% intra-instruction hazards (hazard\_internal\_Dhl, op01\_raw, op01\_waw), whether to
-% issue both fetched instructions (ir0\_Dhl, ir1\_Dhl) to pipelines A and B
-% respectively, issue only one, or stall. The scoreboard (scoreboard array) was
-% retained and adapted to handle potential writes from both pipelines
-% simultaneously, tracking pipeline origin (scoreboard[i][8]) and readiness
-% (scoreboard[i][5]) to manage inter-instruction RAW hazards
-% (stall\_pending\_A\_Dhl, stall\_pending\_B\_Dhl). This scoreboard-based hazard
-% detection, combined with the steering logic's dependency checks, replaced the
-% simpler combinatorial stall logic of the previous design, resulting in more
-% complex overall stall determination (stall\_Dhl) justified by the need to manage
-% hazards between co-issued instructions and across pipeline stages in the
-% two-wide superscalar architecture.
+The speculative pv2-spec processor retains the original five-stage PARCv2
+datapath but augments its ROB and control logic to allow
+instructions to issue and execute past unresolved branches. In my 
+implementation, each of the 16 ROB entries has an additional one-bit “speculative” flag
+that is set at allocation whenever a branch is present in the Issue stage. All
+other fields, valid, pending, and the destination physical register, remain
+unchanged. In addition, I added four new control inputs to the ROB: a
+speculative-allocation indicator, and three branch-resolution signals
+(branch-resolved valid, resolved direction, and mispredict). When a branch
+retires in the Execute stage, the ROB scans all entries. On a correct
+prediction it simply clears each speculative bit and on a misprediction it
+invalidates every speculative entry. 
+
+Note that the commit logic was tightened so that by default only non-speculative, ready
+entries retire in-order, preventing speculative results from escaping until
+proven correct. By implementing a global invalidate or global
+clear approach, rather than precisely tracking the age of each branch, I
+minimize additional pointer arithmetic and per-entry state. In the CoreCtrl
+module, the original stall-on-branch mechanism was removed so that speculative
+instructions flow unimpeded. To address this, branch resolution now drives the ROB’s
+speculative bits. Bypass support in the scoreboard and register file was reused
+unmodified from Part 1, since speculative and non-speculative values share the
+same forwarding paths.
+
+Note that this implementation does not deviate from the prescribed datapath.
+
 
 \noindent No extensions were implemented.
 
 \subsection*{Testing Methodology}
 
-% In order to test correctness, the pipelined processors were tested using the
-% provided assembly test programs. These were designed to cover all the instructions in MIPS v2 assembly, 
-% including ALU operations, load and store operations, branch operations, jump operations, 
-% memory operations. In addition to correctness, performance was also measured with instructions per
-% cycle and cycle counts through the provided benchmark test suite. 
+In order to test correctness, the pipelined processors were tested using the
+provided assembly test programs. These were designed to cover all the instructions in MIPS v2 assembly, 
+including ALU operations, load and store operations, branch operations, jump operations, 
+memory operations. In addition to correctness, performance was also measured with instructions per
+cycle and cycle counts through the provided benchmark test suite. 
 %
 % Two assembly tests were also created to demonstrate that the processor from
 % part 2 could simultaneously decode, detect, and handle WAW hazards and simultaneously decode
@@ -121,6 +126,23 @@ a
 % to ensure proper WAW hazard detection and stalling (see \texttt{parcv1-wawhaz.S}). For the two non-alu operations, two multiply operations
 % were performed adjacently. In addition to yielding the correct result, the pipelines demonstrated simultaneous decoding,
 % but stalling before execution (see \texttt{parcv2-2nonalu.S}).
+
+In testing the processor's functionality, I implemented four additional assembly tests that
+  verified critical aspects of out-of-order and speculative execution. The
+   commit-order-test created a specific dependency chain with a high-latency division operation
+  followed by dependent instructions, validating that the ROB correctly maintained program order
+  even when execution completes out of sequence. The rob-bypass-test verified the
+  processor's ability to bypass values from the ROB that have been written back but not yet
+  committed, ensuring instruction-level parallelism doesn't compromise data integrity. 
+  The waw-test explores write after write hazards that execute correctly across processor
+  implementations due to sufficient time separation, while the better-ipc-test revealed scenarios
+  where the simpler bypassing processor achieved better performance than the complex out-of-order and speculative 
+  implementations due to ROB management overhead. This comprehensive test suite demonstrated  
+  the processors' speculative execution, data forwarding, and commitment mechanisms while targeting
+  specific architectural vulnerabilities, providing confidence in the implementations'
+  correctness across various dependency patterns. The assembly tests can
+  be found in the \texttt{/tests/lab4-custom} directory.
+
 
 \subsection*{Evaluation}
 
@@ -136,23 +158,41 @@ count / IPC.
  Benchmark & pv2byp & pv2ooo & pv2spec \\
  \hline
  \hline
- binary search & 1749/0.731275 & &  \\
+ binary search & 1749/0.731275 & 1695/0.754572 & 2464/0.519075 \\
  \hline
- complex multiply & 15,312/0.121735 &  &  \\
+ complex multiply & 15,312/0.121735 &  2562/0.727557 & 3138/0.594009 \\
  \hline
- masked filter & 13,832/0.32526 & &  \\
+ masked filter & 13,832/0.32526 & 6248/0.720070 & 7693/0.584817 \\
  \hline
- vector add & 473/0.961945 & & \\
+ vector add & 473/0.961945 & 513/0.886940 & 524/0.868321 \\
  \hline
 
 \end{tabular}
 \end{center}
 
+
 \subsection*{Discussion}
 
 
-Trivial analysis of the performance of the three processors with the provided benchmarks elucidates
-the significant benefits of out-of-order execution when compared to naive, in-order bypassing processor.
+Trivial analysis of the performance of the three processors with the provided
+benchmarks elucidates the significant benefits of out-of-order execution when
+compared to naive, in-order bypassing processor. The simple bypassed in-order
+pipeline (pv2byp) delivers excellent performance on straight-line code with
+minimal hazards (vector add IPC $\approx$ 0.96) but suffers on high-latency or
+data-parallel loops (complex multiply IPC $\approx$ 0.12, masked filter IPC $\approx$ 0.33).
+Introducing a 16-entry ROB (pv2ooo) substantially increases instruction‐level
+parallelism—raising IPC to 0.73 and 0.72 on those loops. But this is at the expense of
+slightly higher cycle time and modest pipeline control overhead, which yields
+little or even negative gain on trivial code (vector add IPC drops to 0.89).
+Further adding speculative execution (pv2spec) incurs additional misprediction
+and commit‐logic overhead. It delivers only marginal benefit over pure
+out-of-order on predictable loops and dramatically degrades throughput on
+branch-heavy benchmarks (binary search IPC falls from 0.75 to 0.52). Thus,
+under the Iron Law (CPU time = IC × CPI × cycle time), the ROB primarily lowers
+CPI when ILP is available, speculation can reduce CPI further only if branch
+prediction is accurate, and both techniques slightly increase cycle time
+without affecting instruction count. As such, their net benefit depends on workload
+characteristics.
 
 
 % This is especially notable in the vector add benchmark, where the IPC of the superscalar processor exceeded 1.
@@ -174,30 +214,44 @@ the significant benefits of out-of-order execution when compared to naive, in-or
 \subsection*{Figures}
 
 \begin{center}
-% \includegraphics[scale=0.32]{./dualfetch-datapath.png}
+\includegraphics[scale=0.18]{../cpsc420-lab4/pv2ooo-datapath.jpg}
 \end{center}
-Figure 1. Datapath of out-of-order, singule-issue processor.
+Figure 1. Datapath of out-of-order, single-issue processor.
 %See the new muxes within the Decode stage, one for op0 and one for op1. 
 
 \begin{center}
-    \begin{tabular}{|p{1in}| p{1in}| p{0.8in} | p{0.4in} | p{0.4in}| p{0.4in} | p{0.4in} | p{0.4in} |} 
+    \begin{tabular}{|p{1in}| p{1in}| p{1.5in} |} 
  \hline
- Functional Unit[8] & Instruction Type[7:6] & Pending[5] & W[4] & X3[3] & X2[2] & X1[1]  & X0[0] \\
+  Valid [6] & Pending [5] & Physical Register [4:0] \\
+ \hline
+ \hline
+  1 & 1 & 4'0011 ($3_{10}$) \\
  \hline
 
 \end{tabular}
 \end{center}
-Figure 2. Diagram of reorder buffer for part 1. \\
+Figure 2. Reorder buffer for part 1. Note that the data in the ROB (from the diagram provided on Canvas) live in the pipeline's
+writeback stage or go straight to the register file. \\
 
 \begin{center}
-    \begin{tabular}{|p{1in}| p{1in}| p{0.8in} | p{0.4in} | p{0.4in}| p{0.4in} | p{0.4in} | p{0.4in} |} 
+    \begin{tabular}{|p{1in}| p{1in}| p{1in} | p{1.5in} |} 
+
  \hline
- Functional Unit[8] & Instruction Type[7:6] & Pending[5] & W[4] & X3[3] & X2[2] & X1[1]  & X0[0] \\
+ Speculative[7] & Valid [6] & Pending [5] & Physical Register [4:0] \\
+ \hline
+ \hline
+ 0 & 1 & 1 & 4'0011 ($3_{10}$)   \\
  \hline
 
 \end{tabular}
 \end{center}
-Figure 3. Diagram of reorder buffer for part 3. \\
+Figure 3. Reorder buffer for part 2. Note that the data in the ROB (from the diagram provided on Canvas) live in the pipeline's
+writeback stage or go straight to the register file. \\
+
+\begin{center}
+\includegraphics[scale=0.18]{../cpsc420-lab4/pv2ooo-rob.jpg}
+\end{center}
+Figure 4. Reorder buffer of out-of-order, single-issue processor.
 
 \end{document}
 

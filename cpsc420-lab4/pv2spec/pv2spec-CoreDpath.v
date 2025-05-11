@@ -485,7 +485,6 @@ module parc_CoreDpath
     .wen_p   (rf_wen_Whl),
     .waddr_p (rf_waddr_Whl),
     .wdata_p (wb_mux_out_Whl),
-    // Connect ROB commit interface to the register file
     .wen_c   (rf_wen_Chl),
     .waddr_c (rf_waddr_Chl),
     .wdata_c (rf_wdata_Chl)
